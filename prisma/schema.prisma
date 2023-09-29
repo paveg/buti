@@ -14,15 +14,6 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-model Example {
-    id        Int      @id @default(autoincrement())
-    name      String
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-
-    @@index([name])
-}
-
 // Necessary for Next auth
 model Account {
     id                String  @id @default(cuid())
@@ -58,6 +49,81 @@ model User {
     image         String?
     accounts      Account[]
     sessions      Session[]
+    createdAt     DateTime  @default(now())
+    updatedAt     DateTime  @updatedAt
+}
+
+model Member {
+    id        String       @id @default(cuid())
+    name      String
+    createdAt DateTime     @default(now())
+    updatedAt DateTime     @updatedAt
+    results   GameResult[]
+    TipResult TipResult[]
+}
+
+model GameResult {
+    id        String   @id @default(cuid())
+    game      Game     @relation(fields: [gameId], references: [id])
+    gameId    String
+    member    Member   @relation(fields: [memberId], references: [id])
+    memberId  String
+    point     Int
+    rank      Int // @db.TinyInt(1)
+    kill      Boolean  @default(false) // @db.TinyInt(1)
+    negative  Boolean  @default(false) // @db.TinyInt(1)
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([memberId])
+    @@index([gameId])
+    @@index([memberId, gameId])
+}
+
+model Game {
+    id        String       @id @default(cuid())
+    date      DateTime
+    parlor    Parlor       @relation(fields: [parlorId], references: [id])
+    parlorId  String
+    rule      Rule         @relation(fields: [ruleId], references: [id])
+    ruleId    String
+    seatCost  Int
+    results   GameResult[]
+    createdAt DateTime     @default(now())
+    updatedAt DateTime     @updatedAt
+    TipResult TipResult[]
+}
+
+model TipResult {
+    id       String @id @default(cuid())
+    quantity Int    @default(20)
+    member   Member @relation(fields: [memberId], references: [id])
+    memberId String
+    game     Game   @relation(fields: [gameId], references: [id])
+    gameId   String
+
+    @@unique([memberId, gameId])
+}
+
+model Parlor {
+    id        String   @id @default(cuid())
+    name      String
+    games     Game[]
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model Rule {
+    id             String   @id @default(cuid())
+    rate           Int      @default(50)
+    uma            Int      @default(0) // @db.TinyInt(3)
+    defaultPoint   Int      @default(25000)
+    referencePoint Int      @default(30000)
+    tip            Int      @default(0)
+    games          Game[]
+    killBonus      Boolean  @default(true) // @db.TinyInt(1)
+    createdAt      DateTime @default(now())
+    updatedAt      DateTime @updatedAt
 }
 
 model VerificationToken {

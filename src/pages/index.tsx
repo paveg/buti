@@ -11,7 +11,10 @@ export default function Home() {
     <>
       <Head>
         <title>Buti</title>
-        <meta name="description" content="Buti - Recording scoreo of the Mahjong" />
+        <meta
+          name="description"
+          content="Buti - Recording scoreo of the Mahjong"
+        />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className=" flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
@@ -60,7 +63,7 @@ function AuthShowcase() {
 
   const { data: secretMessage } = api.example.getSecretMessage.useQuery(
     undefined, // no input
-    { enabled: sessionData?.user !== undefined }
+    { enabled: sessionData?.user !== undefined },
   );
 
   return (
@@ -72,6 +75,7 @@ function AuthShowcase() {
       <button
         className="rounded-full bg-white/10 px-10 py-3 font-semibold text-white no-underline transition hover:bg-white/20"
         onClick={sessionData ? () => void signOut() : () => void signIn()}
+        type="submit"
       >
         {sessionData ? "Sign out" : "Sign in"}
       </button>

@@ -1,0 +1,18 @@
+{
+  "$schema": "https://biomejs.dev/schemas/1.2.2/schema.json",
+  "organizeImports": {
+    "enabled": true,
+    "ignore": [".next/*.js"]
+  },
+  "formatter": {
+    "indentStyle": "space",
+    "ignore": [".next/*.js"]
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": true
+    },
+    "ignore": [".next/*.js"]
+  }
+}

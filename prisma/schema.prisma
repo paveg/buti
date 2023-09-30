@@ -56,10 +56,10 @@ model User {
 model Member {
   id         String       @id @default(cuid())
   name       String
-  createdAt  DateTime     @default(now())
-  updatedAt  DateTime     @updatedAt
   results    GameResult[]
   tipResults TipResult[]
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
 }
 
 model GameResult {
@@ -89,10 +89,10 @@ model Game {
   ruleId     String
   seatCost   Int
   results    GameResult[]
-  createdAt  DateTime     @default(now())
-  updatedAt  DateTime     @updatedAt
   tipResults TipResult[]
   headCount  Int          @default(4) // @db.TinyInt(1)
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
 }
 
 model TipResult {

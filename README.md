@@ -6,12 +6,15 @@ This is a Buti/打(ぶ)ち project bootstrapped with `create-t3-app`.
 
 1. Fork this repository
 2. Clone your fork
-3. Set Google OAuth credentials in `.env.local`
+3. `npm install`
+4. Set Google OAuth credentials in `.env.local`
    - `GOOGLE_CLIENT_ID`
    - `GOOGLE_CLIENT_SECRET`
      - References: https://zenn.dev/hayato94087/articles/91179fbbe1cad4
    - `NEXTAUTH_SECRET`
      - `openssl rand -base64 32`
+5. `npx prisma migrate deploy` or `npx prisma migrate reset`
+6. `npm run dev` and access the `http://localhost:3000`
 
 ## What's next? How do I make an app with this?
 

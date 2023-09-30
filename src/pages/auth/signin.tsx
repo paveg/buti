@@ -1,6 +1,6 @@
-import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { signIn, signOut, useSession } from "next-auth/react";
+import { Button } from "~/components/ui/button";
 import { AuthLayout } from "./layout";
 
 export default function SignIn() {

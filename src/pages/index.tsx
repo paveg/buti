@@ -1,5 +1,12 @@
-import { AspectRatio } from "@/components/ui/aspect-ratio";
-import { Button } from "@/components/ui/button";
+import { Game, GameResult, Member, Rule, TipResult } from "@prisma/client";
+import { formatISO } from "date-fns";
+import { signIn, signOut, useSession } from "next-auth/react";
+import Head from "next/head";
+import Image from "next/image";
+import Link from "next/link";
+import { useState } from "react";
+import { AspectRatio } from "~/components/ui/aspect-ratio";
+import { Button } from "~/components/ui/button";
 import {
   Table,
   TableBody,
@@ -8,13 +15,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { Game, GameResult, Member, Rule, TipResult } from "@prisma/client";
-import { formatISO } from "date-fns";
-import { signIn, signOut, useSession } from "next-auth/react";
-import Head from "next/head";
-import Image from "next/image";
-import Link from "next/link";
+} from "~/components/ui/table";
 import { DefaultQuantity } from "~/models/rule";
 
 import { api } from "~/utils/api";
@@ -91,7 +92,9 @@ const positionByRank = (
 };
 
 export default function Home() {
-  const { data: games, isLoading } = api.game.getAll.useQuery({
+  const [year, setYear] = useState<number>(new Date().getFullYear());
+  const { data: games, isLoading } = api.game.getByYear.useQuery({
+    year: year,
     initialData: [],
   });
 
@@ -106,7 +109,8 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        <div className="mx-auto m-12 container">
+        <div className="mx-auto m-4 container">
+          <h1 className="text-2xl text-center">{year}年の戦績</h1>
           {!isLoading &&
             games.map((game) => {
               const uniqMembers = UniqueModels<Member>(
@@ -122,11 +126,11 @@ export default function Home() {
                   game.headCount * DefaultQuantity;
               return (
                 <Table key={game.id} className="mx-auto">
-                  <TableCaption className="mt-8">
-                    <h2 className="text-lg font-bold">
-                      {formatISO(game.date, { representation: "date" })} -{" "}
-                      {game.name} at {game.parlor.name}
-                    </h2>
+                  <TableCaption>
+                    {formatISO(game.date, { representation: "date" })}{" "}
+                    {game.name}（対局数: {game.results.length / game.headCount}
+                    ）
+                    {game.parlor.name}
                   </TableCaption>
                   <TableHeader>
                     <TableRow>
@@ -251,11 +255,22 @@ export default function Home() {
                 </Table>
               );
             })}
-        </div>
-        <div>
-          <Button variant="primary" asChild>
-            <Link href="/auth/signin">Sign In Page</Link>
-          </Button>
+          <div className="my-2 flex justify-center">
+            <Button
+              className="mx-1"
+              variant="secondary"
+              onClick={() => setYear(year - 1)}
+            >
+              前の年
+            </Button>
+            <Button
+              className="mx-1"
+              variant="secondary"
+              onClick={() => setYear(year + 1)}
+            >
+              次の年
+            </Button>
+          </div>
         </div>
       </main>
     </>

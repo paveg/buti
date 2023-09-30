@@ -72,6 +72,8 @@ model GameResult {
   rank      Int // @db.TinyInt(1)
   kill      Boolean  @default(false) // @db.TinyInt(1)
   negative  Boolean  @default(false) // @db.TinyInt(1)
+  // ゲーム結果の順番
+  sequence  Int      @default(0) // @db.TinyInt(3)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -82,14 +84,18 @@ model GameResult {
 
 model Game {
   id         String       @id @default(cuid())
+  name       String
   date       DateTime
+  // 雀荘
   parlor     Parlor       @relation(fields: [parlorId], references: [id])
   parlorId   String
   rule       Rule         @relation(fields: [ruleId], references: [id])
   ruleId     String
+  // 場代
   seatCost   Int
   results    GameResult[]
   tipResults TipResult[]
+  // 人数: 3 -> 三麻, 4 -> 四麻
   headCount  Int          @default(4) // @db.TinyInt(1)
   createdAt  DateTime     @default(now())
   updatedAt  DateTime     @updatedAt
@@ -97,6 +103,7 @@ model Game {
 
 model TipResult {
   id       String @id @default(cuid())
+  // チップ枚数
   quantity Int    @default(20)
   member   Member @relation(fields: [memberId], references: [id])
   memberId String
@@ -116,12 +123,20 @@ model Parlor {
 
 model Rule {
   id             String   @id @default(cuid())
+  // レート
   rate           Int      @default(50)
+  // ウマ
   uma            Int      @default(0) // @db.TinyInt(3)
+  // 初期持ち点
   defaultPoint   Int      @default(25000)
+  // 基準点
   referencePoint Int      @default(30000)
+  // チップ点数
   tip            Int      @default(0)
+  // enum - 0: 東風 1: 半荘
+  round          Int      @default(1) // @db.TinyInt(1)
   games          Game[]
+  // トビ賞
   killBonus      Boolean  @default(true) // @db.TinyInt(1)
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt

@@ -24,12 +24,16 @@ import { RoundDown } from "~/utils/number";
 import { RankPoint } from "~/utils/point";
 
 const calcScore = (result: GameResult, rule: Rule) => {
-  return (
-    RoundDown(
-      result.point - rule.referencePoint + RankPoint(result.rank, rule.uma),
-      1000,
-    ) / 1000
-  );
+  const p =
+    result.point - rule.referencePoint + RankPoint(result.rank, rule.uma);
+  if (result.negative) {
+    p - 10000;
+  }
+  if (result.kill) {
+    p + 10000;
+  }
+
+  return RoundDown(p, 1000) / 1000;
 };
 const topScore = (rule: Rule, results: GameResult[], member: Member) => {
   return results
@@ -91,6 +95,16 @@ const positionByRank = (
   ).length;
 };
 
+const killedCount = (gameResults: GameResult[], member: Member) => {
+  return GroupBy(gameResults, (result) => result.sequence).filter(
+    ([seq, results]) => {
+      return results.some(
+        (result) => result.member.id === member.id && result.negative,
+      );
+    },
+  ).length;
+};
+
 export default function Home() {
   const [year, setYear] = useState<number>(new Date().getFullYear());
   const { data: games, isLoading } = api.game.getByYear.useQuery({
@@ -124,12 +138,12 @@ export default function Home() {
                   return acc + result.quantity;
                 }, 0) ===
                   game.headCount * DefaultQuantity;
+              const rounds = game.results.length / game.headCount;
               return (
                 <Table key={game.id} className="mx-auto">
                   <TableCaption>
                     {formatISO(game.date, { representation: "date" })}{" "}
-                    {game.name}（対局数: {game.results.length / game.headCount}
-                    ）
+                    {game.name}（対局数: {rounds}）
                     {game.parlor.name}
                   </TableCaption>
                   <TableHeader>
@@ -181,7 +195,7 @@ export default function Home() {
                       </TableRow>
                     )}
                     <TableRow>
-                      <TableCell className="w-[100px]">合計得点</TableCell>
+                      <TableCell className="w-[100px]">合計点数</TableCell>
                       {uniqMembers.map((member) => {
                         return (
                           <TableCell
@@ -247,6 +261,115 @@ export default function Home() {
                             key={`${member.id}-4`}
                           >
                             {positionByRank(game.results, member, 4)}
+                          </TableCell>
+                        );
+                      })}
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="w-[100px]">平均着順</TableCell>
+                      {uniqMembers.map((member) => {
+                        return (
+                          <TableCell
+                            className="w-[100px] text-center"
+                            key={`${member.id}-rank-average`}
+                          >
+                            {(
+                              [...Array(game.headCount)]
+                                .map((_, index) => {
+                                  return (
+                                    positionByRank(
+                                      game.results,
+                                      member,
+                                      index + 1,
+                                    ) *
+                                    (index + 1)
+                                  );
+                                })
+                                .reduce((acc, ranked) => {
+                                  return acc + ranked;
+                                }, 0) / rounds
+                            ).toFixed(2)}
+                            位
+                          </TableCell>
+                        );
+                      })}
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="w-[100px]">連対率</TableCell>
+                      {uniqMembers.map((member) => {
+                        return (
+                          <TableCell
+                            className="w-[100px] text-center"
+                            key={`${member.id}-plus-percentage`}
+                          >
+                            {(
+                              ([...Array(2)]
+                                .map((_, index) => {
+                                  return positionByRank(
+                                    game.results,
+                                    member,
+                                    index + 1,
+                                  );
+                                })
+                                .reduce((acc, ranked) => {
+                                  return acc + ranked;
+                                }, 0) /
+                                rounds) *
+                              100
+                            ).toFixed(2)}
+                            %
+                          </TableCell>
+                        );
+                      })}
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="w-[100px]">ラス率</TableCell>
+                      {uniqMembers.map((member) => {
+                        return (
+                          <TableCell
+                            className="w-[100px] text-center"
+                            key={`${member.id}-last-place-average`}
+                          >
+                            {(
+                              (positionByRank(
+                                game.results,
+                                member,
+                                game.headCount,
+                              ) /
+                                rounds) *
+                              100
+                            ).toFixed(2)}
+                            %
+                          </TableCell>
+                        );
+                      })}
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="w-[100px]">トビ回数</TableCell>
+                      {uniqMembers.map((member) => {
+                        return (
+                          <TableCell
+                            className="w-[100px] text-center"
+                            key={`${member.id}-killed-count`}
+                          >
+                            {killedCount(game.results, member)}
+                          </TableCell>
+                        );
+                      })}
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className="w-[100px]">トビ率</TableCell>
+                      {uniqMembers.map((member) => {
+                        return (
+                          <TableCell
+                            className="w-[100px] text-center"
+                            key={`${member.id}-killed-percentile`}
+                          >
+                            {(
+                              (killedCount(game.results, member) / rounds) *
+                              100
+                            ).toFixed(2)}
+                            %
                           </TableCell>
                         );
                       })}

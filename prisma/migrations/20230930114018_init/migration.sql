@@ -52,6 +52,7 @@ CREATE TABLE "GameResult" (
     "rank" INTEGER NOT NULL,
     "kill" BOOLEAN NOT NULL DEFAULT false,
     "negative" BOOLEAN NOT NULL DEFAULT false,
+    "sequence" INTEGER NOT NULL DEFAULT 0,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" DATETIME NOT NULL,
     CONSTRAINT "GameResult_gameId_fkey" FOREIGN KEY ("gameId") REFERENCES "Game" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
@@ -61,6 +62,7 @@ CREATE TABLE "GameResult" (
 -- CreateTable
 CREATE TABLE "Game" (
     "id" TEXT NOT NULL PRIMARY KEY,
+    "name" TEXT NOT NULL,
     "date" DATETIME NOT NULL,
     "parlorId" TEXT NOT NULL,
     "ruleId" TEXT NOT NULL,
@@ -98,6 +100,7 @@ CREATE TABLE "Rule" (
     "defaultPoint" INTEGER NOT NULL DEFAULT 25000,
     "referencePoint" INTEGER NOT NULL DEFAULT 30000,
     "tip" INTEGER NOT NULL DEFAULT 0,
+    "round" INTEGER NOT NULL DEFAULT 1,
     "killBonus" BOOLEAN NOT NULL DEFAULT true,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" DATETIME NOT NULL

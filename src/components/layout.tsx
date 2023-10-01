@@ -1,5 +1,6 @@
 import Head from "next/head";
 import { FC } from "react";
+import { Navigation } from "~/components/navigation";
 import { Toaster } from "~/components/ui/toaster";
 
 type Props = {
@@ -10,6 +11,7 @@ export const Layout: FC = ({ children }: Props) => {
   // TODO: Implement navigation bar
   return (
     <>
+      <Navigation />
       {children}
       <Toaster />
     </>

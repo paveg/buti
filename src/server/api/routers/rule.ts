@@ -5,19 +5,36 @@ export const ruleRouter = createTRPCRouter({
   getAll: publicProcedure.query(({ ctx }) => {
     return ctx.db.rule.findMany();
   }),
-  createRule: publicProcedure
+  getBy: publicProcedure
     .input(
       z.object({
         rate: z.number(),
-        uma: z.number().min(0).max(3),
+        uma: z.number(),
         defaultPoint: z.number(),
         referencePoint: z.number(),
         tip: z.number(),
-        round: z.number().min(0).max(1),
-        killButton: z.boolean(),
+        round: z.number(),
+        killBonus: z.boolean(),
       }),
     )
     .query(({ ctx, input }) => {
+      return ctx.db.rule.findFirst({
+        where: input,
+      });
+    }),
+  findOrCreate: publicProcedure
+    .input(
+      z.object({
+        rate: z.number(),
+        uma: z.number(),
+        defaultPoint: z.number(),
+        referencePoint: z.number(),
+        tip: z.number(),
+        round: z.number(),
+        killBonus: z.boolean(),
+      }),
+    )
+    .mutation(({ ctx, input }) => {
       const newRule = ctx.db.rule.create({
         data: input,
       });

@@ -13,6 +13,8 @@ import {
   FormMessage,
 } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
+import { Label } from "~/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
 import {
   Select,
   SelectContent,
@@ -21,29 +23,40 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
-import { Round, Uma } from "~/models/rule";
+import { Switch } from "~/components/ui/switch";
+import { useToast } from "~/components/ui/use-toast";
+import {
+  RateStrings,
+  Round,
+  RoundStrings,
+  Uma,
+  UmaStrings,
+} from "~/models/rule";
 import { api } from "~/utils/api";
 
-export const RuleForm: FC = () => {
+export function RuleForm() {
+  const { toast } = useToast();
   const formSchema = z.object({
-    rate: z
+    rate: z.number({
+      required_error: "レートを選択してください",
+    }),
+    uma: z
       .number({
-        required_error: "レートを選択してください",
-        required: true,
+        required_error: "ウマを選択してください",
       })
-      .nonnegative(),
-    uma: z.number().min(0).max(3),
+      .min(Uma.FIVETEN)
+      .max(Uma.TWOTHREE),
     defaultPoint: z.number(),
     referencePoint: z.number(),
     tip: z.number(),
-    round: z.number().min(0).max(1),
-    killButton: z.boolean(),
+    round: z.number(),
+    killBonus: z.boolean(),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      rate: 50,
+      rate: 100,
       uma: Uma.ONETHREE,
       defaultPoint: 25000,
       referencePoint: 30000,
@@ -52,45 +65,219 @@ export const RuleForm: FC = () => {
       killBonus: true,
     },
   });
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    return api.rule.createRule.useQuery(values);
+  const { data: rule } = api.rule.getBy.useQuery({
+    ...form.getValues(),
+  });
+  const { refetch } = api.rule.getAll.useQuery();
+  const { mutateAsync } = api.rule.findOrCreate.useMutation();
+
+  function onSubmit(values: z.infer<typeof formSchema>) {
+    if (rule) {
+      toast({
+        title: "ルールが既に存在します",
+        variant: "destructive",
+      });
+      return;
+    }
+    return mutateAsync(values, {
+      onSettled: () => {
+        refetch();
+      },
+      onSuccess: () => {
+        toast({
+          title: "ルールを作成しました",
+        });
+      },
+    });
   }
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <FormField
-          control={form.control}
-          name="rate"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Rate</FormLabel>
-              <Select
-                value={field.value}
-                onValueChange={(value) => field.onChange(Number(value))}
-                defaultValue={field.value}
-              >
-                <FormControl>
-                  <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="rate" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value={0}>ノーレート</SelectItem>
-                  <SelectItem value={10}>テンイチ</SelectItem>
-                  <SelectItem value={20}>テンニ</SelectItem>
-                  <SelectItem value={30}>テンサン</SelectItem>
-                  <SelectItem value={50}>テンゴ</SelectItem>
-                  <SelectItem value={100}>テンピン</SelectItem>
-                </SelectContent>
-              </Select>
-              <FormDescription />
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button type="submit">ルールを作成する</Button>
-      </form>
-    </Form>
+    <div className="mx-auto w-[1000px]">
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <div className="flex space-x-8">
+            <FormField
+              control={form.control}
+              name="round"
+              render={({ field }) => (
+                <FormItem className="space-y-3">
+                  <FormLabel>ゲーム種別</FormLabel>
+                  <FormControl>
+                    <RadioGroup
+                      name="round"
+                      onValueChange={(value) => field.onChange(value as Round)}
+                      defaultValue={field.value}
+                      className="flex flex-col space-y-1"
+                    >
+                      <FormItem className="flex items-center space-x-3 space-y-0">
+                        <FormControl>
+                          <RadioGroupItem
+                            checked={Number(field.value) === Round.ONEROUND}
+                            value={Round.ONEROUND}
+                          />
+                        </FormControl>
+                        <FormLabel>{RoundStrings(Round.ONEROUND)}</FormLabel>
+                      </FormItem>
+                      <FormItem className="flex items-center space-x-3 space-y-0">
+                        <FormControl>
+                          <RadioGroupItem
+                            checked={Number(field.value) === Round.HALFROUND}
+                            value={Round.HALFROUND}
+                          />
+                        </FormControl>
+                        <FormLabel>{RoundStrings(Round.HALFROUND)}</FormLabel>
+                      </FormItem>
+                    </RadioGroup>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="uma"
+              render={({ field }) => (
+                <FormItem className="space-y-3">
+                  <FormLabel>ウマ</FormLabel>
+                  <FormControl>
+                    <RadioGroup
+                      name="uma"
+                      onValueChange={(value) => field.onChange(value as Uma)}
+                      defaultValue={field.value}
+                      className="flex flex-col space-y-1"
+                    >
+                      <FormItem className="flex items-center space-x-3 space-y-0">
+                        <FormControl>
+                          <RadioGroupItem
+                            name="uma"
+                            checked={Number(field.value) === Uma.FIVETEN}
+                            value={Uma.FIVETEN}
+                          />
+                        </FormControl>
+                        <FormLabel>{UmaStrings(Uma.FIVETEN)}</FormLabel>
+                      </FormItem>
+                      <FormItem className="flex items-center space-x-3 space-y-0">
+                        <FormControl>
+                          <RadioGroupItem
+                            name="uma"
+                            checked={Number(field.value) === Uma.ONETWO}
+                            value={Uma.ONETWO}
+                          />
+                        </FormControl>
+                        <FormLabel>{UmaStrings(Uma.ONETWO)}</FormLabel>
+                      </FormItem>
+                      <FormItem className="flex items-center space-x-3 space-y-0">
+                        <FormControl>
+                          <RadioGroupItem
+                            name="uma"
+                            checked={Number(field.value) === Uma.ONETHREE}
+                            value={Uma.ONETHREE}
+                          />
+                        </FormControl>
+                        <FormLabel>{UmaStrings(Uma.ONETHREE)}</FormLabel>
+                      </FormItem>
+                      <FormItem className="flex items-center space-x-3 space-y-0">
+                        <FormControl>
+                          <RadioGroupItem
+                            name="uma"
+                            checked={Number(field.value) === Uma.TWOTHREE}
+                            value={Uma.TWOTHREE}
+                          />
+                        </FormControl>
+                        <FormLabel>{UmaStrings(Uma.TWOTHREE)}</FormLabel>
+                      </FormItem>
+                    </RadioGroup>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="rate"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>レート</FormLabel>
+                  <Select
+                    value={field.value}
+                    onValueChange={(value) => field.onChange(Number(value))}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger className="w-[180px]">
+                        <SelectValue placeholder="rate" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {[0, 10, 20, 30, 50, 100].map((rate) => {
+                        return (
+                          <SelectItem
+                            value={rate}
+                            key={`select-item-rate-${rate}`}
+                          >
+                            {RateStrings(rate)}
+                          </SelectItem>
+                        );
+                      })}
+                    </SelectContent>
+                  </Select>
+                  <FormDescription />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="tip"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>チップ</FormLabel>
+                  <Select
+                    value={field.value}
+                    onValueChange={(value) => field.onChange(Number(value))}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger className="w-[180px]">
+                        <SelectValue placeholder="rate" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value={0}>0</SelectItem>
+                      <SelectItem value={500}>500</SelectItem>
+                      <SelectItem value={1000}>1000</SelectItem>
+                      <SelectItem value={2000}>2000</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormDescription />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="killBonus"
+              render={({ field }) => (
+                <FormItem className="flex flex-col items-center space-y-5">
+                  <FormLabel>飛び賞</FormLabel>
+                  <FormDescription>
+                    自摸又は栄和で他家を0点未満にした際のボーナス
+                  </FormDescription>
+                  <FormControl>
+                    <Switch
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+          </div>
+          <div className="text-center">
+            <Button type="submit">ルールを作成する</Button>
+          </div>
+        </form>
+      </Form>
+    </div>
   );
-};
+}

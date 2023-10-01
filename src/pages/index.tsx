@@ -5,6 +5,7 @@ import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { Layout } from "~/components/layout";
 import { AspectRatio } from "~/components/ui/aspect-ratio";
 import { Button } from "~/components/ui/button";
 import {
@@ -112,291 +113,281 @@ export default function Home() {
   });
 
   return (
-    <>
-      <Head>
-        <title>Buti</title>
-        <meta
-          name="description"
-          content="Buti - Recording score of the Mahjong"
-        />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-      <main>
-        <div className="mx-auto m-4 container">
-          <h1 className="text-2xl text-center">{year}年の戦績</h1>
-          {!isLoading &&
-            games.map((game) => {
-              const uniqMembers = UniqueModels<Member>(
-                game.results.map((result) => {
-                  return result.member;
-                }),
-              );
-              const tipExist = (): boolean =>
-                game.rule.tip > 0 &&
-                game.tipResults.reduce((acc, result) => {
-                  return acc + result.quantity;
-                }, 0) ===
-                  game.headCount * DefaultQuantity;
-              const rounds = game.results.length / game.headCount;
-              return (
-                <Table key={game.id} className="mx-auto">
-                  <TableCaption>
-                    {formatISO(game.date, { representation: "date" })}{" "}
-                    {game.name}（対局数: {rounds}）
-                    {game.parlor.name}
-                  </TableCaption>
-                  <TableHeader>
+    <Layout>
+      <div className="mx-auto m-4 container">
+        <h1 className="text-2xl text-center">{year}年の戦績</h1>
+        {!isLoading &&
+          games.map((game) => {
+            const uniqMembers = UniqueModels<Member>(
+              game.results.map((result) => {
+                return result.member;
+              }),
+            );
+            const tipExist = (): boolean =>
+              game.rule.tip > 0 &&
+              game.tipResults.reduce((acc, result) => {
+                return acc + result.quantity;
+              }, 0) ===
+                game.headCount * DefaultQuantity;
+            const rounds = game.results.length / game.headCount;
+            return (
+              <Table key={game.id} className="mx-auto">
+                <TableCaption>
+                  {formatISO(game.date, { representation: "date" })} {game.name}
+                  （対局数: {rounds}）
+                  {game.parlor.name}
+                </TableCaption>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-[100px]">{}</TableHead>
+                    {uniqMembers.map((member) => {
+                      return (
+                        <TableHead
+                          className="w-[100px] text-center"
+                          key={member.id}
+                        >
+                          <Link href={`/members/${member.id}`}>
+                            {member.name}
+                          </Link>
+                        </TableHead>
+                      );
+                    })}
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  <TableRow>
+                    <TableCell className="w-[100px]">素点</TableCell>
+                    {uniqMembers.map((member) => {
+                      return (
+                        <TableCell
+                          className="w-[100px] text-center"
+                          key={`${game.id}-${member.id}-point`}
+                        >
+                          {calcScoreByGame(game, game.results, member)}
+                        </TableCell>
+                      );
+                    })}
+                  </TableRow>
+                  {tipExist() && (
                     <TableRow>
-                      <TableHead className="w-[100px]">{}</TableHead>
-                      {uniqMembers.map((member) => {
-                        return (
-                          <TableHead
-                            className="w-[100px] text-center"
-                            key={member.id}
-                          >
-                            <Link href={`/members/${member.id}`}>
-                              {member.name}
-                            </Link>
-                          </TableHead>
-                        );
-                      })}
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    <TableRow>
-                      <TableCell className="w-[100px]">素点</TableCell>
+                      <TableCell className="w-[100px]">チップ数</TableCell>
                       {uniqMembers.map((member) => {
                         return (
                           <TableCell
                             className="w-[100px] text-center"
-                            key={`${game.id}-${member.id}-point`}
+                            key={`${game.id}-${member.id}-tip`}
                           >
-                            {calcScoreByGame(game, game.results, member)}
+                            {calcTipQuantity(
+                              game.rule,
+                              game.tipResults,
+                              member,
+                            )}
                           </TableCell>
                         );
                       })}
                     </TableRow>
-                    {tipExist() && (
-                      <TableRow>
-                        <TableCell className="w-[100px]">チップ数</TableCell>
-                        {uniqMembers.map((member) => {
-                          return (
-                            <TableCell
-                              className="w-[100px] text-center"
-                              key={`${game.id}-${member.id}-tip`}
-                            >
-                              {calcTipQuantity(
+                  )}
+                  <TableRow>
+                    <TableCell className="w-[100px]">合計点数</TableCell>
+                    {uniqMembers.map((member) => {
+                      return (
+                        <TableCell
+                          className="w-[100px] text-center"
+                          key={`${game.id}-${member.id}-amount`}
+                        >
+                          {tipExist()
+                            ? calcTipQuantity(
                                 game.rule,
                                 game.tipResults,
                                 member,
-                              )}
-                            </TableCell>
-                          );
-                        })}
-                      </TableRow>
-                    )}
-                    <TableRow>
-                      <TableCell className="w-[100px]">合計点数</TableCell>
-                      {uniqMembers.map((member) => {
-                        return (
-                          <TableCell
-                            className="w-[100px] text-center"
-                            key={`${game.id}-${member.id}-amount`}
-                          >
-                            {tipExist()
-                              ? calcTipQuantity(
-                                  game.rule,
-                                  game.tipResults,
-                                  member,
-                                ) + calcScoreByGame(game, game.results, member)
-                              : calcScoreByGame(game, game.results, member)}
-                          </TableCell>
-                        );
-                      })}
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="w-[100px]">1着数</TableCell>
-                      {uniqMembers.map((member) => {
-                        return (
-                          <TableCell
-                            className="w-[100px] text-center"
-                            key={`${member.id}-1`}
-                          >
-                            {positionByRank(game.results, member, 1)}
-                          </TableCell>
-                        );
-                      })}
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="w-[100px]">2着数</TableCell>
-                      {uniqMembers.map((member) => {
-                        return (
-                          <TableCell
-                            className="w-[100px] text-center"
-                            key={`${member.id}-2`}
-                          >
-                            {positionByRank(game.results, member, 2)}
-                          </TableCell>
-                        );
-                      })}
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="w-[100px]">3着数</TableCell>
-                      {uniqMembers.map((member) => {
-                        return (
-                          <TableCell
-                            className="w-[100px] text-center"
-                            key={`${member.id}-3`}
-                          >
-                            {positionByRank(game.results, member, 3)}
-                          </TableCell>
-                        );
-                      })}
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="w-[100px]">4着数</TableCell>
-                      {uniqMembers.map((member) => {
-                        return (
-                          <TableCell
-                            className="w-[100px] text-center"
-                            key={`${member.id}-4`}
-                          >
-                            {positionByRank(game.results, member, 4)}
-                          </TableCell>
-                        );
-                      })}
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="w-[100px]">平均着順</TableCell>
-                      {uniqMembers.map((member) => {
-                        return (
-                          <TableCell
-                            className="w-[100px] text-center"
-                            key={`${member.id}-rank-average`}
-                          >
-                            {(
-                              [...Array(game.headCount)]
-                                .map((_, index) => {
-                                  return (
-                                    positionByRank(
-                                      game.results,
-                                      member,
-                                      index + 1,
-                                    ) *
-                                    (index + 1)
-                                  );
-                                })
-                                .reduce((acc, ranked) => {
-                                  return acc + ranked;
-                                }, 0) / rounds
-                            ).toFixed(2)}
-                            位
-                          </TableCell>
-                        );
-                      })}
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="w-[100px]">連対率</TableCell>
-                      {uniqMembers.map((member) => {
-                        return (
-                          <TableCell
-                            className="w-[100px] text-center"
-                            key={`${member.id}-plus-percentage`}
-                          >
-                            {(
-                              ([...Array(2)]
-                                .map((_, index) => {
-                                  return positionByRank(
+                              ) + calcScoreByGame(game, game.results, member)
+                            : calcScoreByGame(game, game.results, member)}
+                        </TableCell>
+                      );
+                    })}
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="w-[100px]">1着数</TableCell>
+                    {uniqMembers.map((member) => {
+                      return (
+                        <TableCell
+                          className="w-[100px] text-center"
+                          key={`${member.id}-1`}
+                        >
+                          {positionByRank(game.results, member, 1)}
+                        </TableCell>
+                      );
+                    })}
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="w-[100px]">2着数</TableCell>
+                    {uniqMembers.map((member) => {
+                      return (
+                        <TableCell
+                          className="w-[100px] text-center"
+                          key={`${member.id}-2`}
+                        >
+                          {positionByRank(game.results, member, 2)}
+                        </TableCell>
+                      );
+                    })}
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="w-[100px]">3着数</TableCell>
+                    {uniqMembers.map((member) => {
+                      return (
+                        <TableCell
+                          className="w-[100px] text-center"
+                          key={`${member.id}-3`}
+                        >
+                          {positionByRank(game.results, member, 3)}
+                        </TableCell>
+                      );
+                    })}
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="w-[100px]">4着数</TableCell>
+                    {uniqMembers.map((member) => {
+                      return (
+                        <TableCell
+                          className="w-[100px] text-center"
+                          key={`${member.id}-4`}
+                        >
+                          {positionByRank(game.results, member, 4)}
+                        </TableCell>
+                      );
+                    })}
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="w-[100px]">平均着順</TableCell>
+                    {uniqMembers.map((member) => {
+                      return (
+                        <TableCell
+                          className="w-[100px] text-center"
+                          key={`${member.id}-rank-average`}
+                        >
+                          {(
+                            [...Array(game.headCount)]
+                              .map((_, index) => {
+                                return (
+                                  positionByRank(
                                     game.results,
                                     member,
                                     index + 1,
-                                  );
-                                })
-                                .reduce((acc, ranked) => {
-                                  return acc + ranked;
-                                }, 0) /
-                                rounds) *
-                              100
-                            ).toFixed(2)}
-                            %
-                          </TableCell>
-                        );
-                      })}
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="w-[100px]">ラス率</TableCell>
-                      {uniqMembers.map((member) => {
-                        return (
-                          <TableCell
-                            className="w-[100px] text-center"
-                            key={`${member.id}-last-place-average`}
-                          >
-                            {(
-                              (positionByRank(
-                                game.results,
-                                member,
-                                game.headCount,
-                              ) /
-                                rounds) *
-                              100
-                            ).toFixed(2)}
-                            %
-                          </TableCell>
-                        );
-                      })}
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="w-[100px]">トビ回数</TableCell>
-                      {uniqMembers.map((member) => {
-                        return (
-                          <TableCell
-                            className="w-[100px] text-center"
-                            key={`${member.id}-killed-count`}
-                          >
-                            {killedCount(game.results, member)}
-                          </TableCell>
-                        );
-                      })}
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className="w-[100px]">トビ率</TableCell>
-                      {uniqMembers.map((member) => {
-                        return (
-                          <TableCell
-                            className="w-[100px] text-center"
-                            key={`${member.id}-killed-percentile`}
-                          >
-                            {(
-                              (killedCount(game.results, member) / rounds) *
-                              100
-                            ).toFixed(2)}
-                            %
-                          </TableCell>
-                        );
-                      })}
-                    </TableRow>
-                  </TableBody>
-                </Table>
-              );
-            })}
-          <div className="my-2 flex justify-center">
-            <Button
-              className="mx-1"
-              variant="secondary"
-              onClick={() => setYear(year - 1)}
-            >
-              前の年
-            </Button>
-            <Button
-              className="mx-1"
-              variant="secondary"
-              onClick={() => setYear(year + 1)}
-            >
-              次の年
-            </Button>
-          </div>
+                                  ) *
+                                  (index + 1)
+                                );
+                              })
+                              .reduce((acc, ranked) => {
+                                return acc + ranked;
+                              }, 0) / rounds
+                          ).toFixed(2)}
+                          位
+                        </TableCell>
+                      );
+                    })}
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="w-[100px]">連対率</TableCell>
+                    {uniqMembers.map((member) => {
+                      return (
+                        <TableCell
+                          className="w-[100px] text-center"
+                          key={`${member.id}-plus-percentage`}
+                        >
+                          {(
+                            ([...Array(2)]
+                              .map((_, index) => {
+                                return positionByRank(
+                                  game.results,
+                                  member,
+                                  index + 1,
+                                );
+                              })
+                              .reduce((acc, ranked) => {
+                                return acc + ranked;
+                              }, 0) /
+                              rounds) *
+                            100
+                          ).toFixed(2)}
+                          %
+                        </TableCell>
+                      );
+                    })}
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="w-[100px]">ラス率</TableCell>
+                    {uniqMembers.map((member) => {
+                      return (
+                        <TableCell
+                          className="w-[100px] text-center"
+                          key={`${member.id}-last-place-average`}
+                        >
+                          {(
+                            (positionByRank(
+                              game.results,
+                              member,
+                              game.headCount,
+                            ) /
+                              rounds) *
+                            100
+                          ).toFixed(2)}
+                          %
+                        </TableCell>
+                      );
+                    })}
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="w-[100px]">トビ回数</TableCell>
+                    {uniqMembers.map((member) => {
+                      return (
+                        <TableCell
+                          className="w-[100px] text-center"
+                          key={`${member.id}-killed-count`}
+                        >
+                          {killedCount(game.results, member)}
+                        </TableCell>
+                      );
+                    })}
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="w-[100px]">トビ率</TableCell>
+                    {uniqMembers.map((member) => {
+                      return (
+                        <TableCell
+                          className="w-[100px] text-center"
+                          key={`${member.id}-killed-percentile`}
+                        >
+                          {(
+                            (killedCount(game.results, member) / rounds) *
+                            100
+                          ).toFixed(2)}
+                          %
+                        </TableCell>
+                      );
+                    })}
+                  </TableRow>
+                </TableBody>
+              </Table>
+            );
+          })}
+        <div className="my-2 flex justify-center">
+          <Button
+            className="mx-1"
+            variant="secondary"
+            onClick={() => setYear(year - 1)}
+          >
+            前の年
+          </Button>
+          <Button
+            className="mx-1"
+            variant="secondary"
+            onClick={() => setYear(year + 1)}
+          >
+            次の年
+          </Button>
         </div>
-      </main>
-    </>
+      </div>
+    </Layout>
   );
 }

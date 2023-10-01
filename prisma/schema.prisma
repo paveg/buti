@@ -136,7 +136,7 @@ model Rule {
   // enum - 0: 東風 1: 半荘
   round          Int      @default(1) // @db.TinyInt(1)
   games          Game[]
-  // トビ賞
+  // 飛び賞
   killBonus      Boolean  @default(true) // @db.TinyInt(1)
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt

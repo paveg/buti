@@ -33,6 +33,23 @@ export const RoundStrings = (round: Round) => {
   }
 };
 
+export const RateStrings = (rate: number) => {
+  switch (rate) {
+    case 0:
+      return "ノーレート";
+    case 10:
+      return "テンイチ";
+    case 20:
+      return "テンニ";
+    case 30:
+      return "テンサン";
+    case 50:
+      return "テンゴ";
+    case 100:
+      return "テンピン";
+  }
+};
+
 export const RankPointFiveTen = (rank: number): number => {
   switch (rank) {
     case 1:

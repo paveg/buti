@@ -155,7 +155,9 @@ export default function Home() {
                             className="w-[100px] text-center"
                             key={member.id}
                           >
-                            {member.name}
+                            <Link href={`/members/${member.id}`}>
+                              {member.name}
+                            </Link>
                           </TableHead>
                         );
                       })}

@@ -24,13 +24,12 @@ import { RoundDown } from "~/utils/number";
 import { RankPoint } from "~/utils/point";
 
 const calcScore = (result: GameResult, rule: Rule) => {
-  const p =
-    result.point - rule.referencePoint + RankPoint(result.rank, rule.uma);
+  let p = result.point - rule.referencePoint + RankPoint(result.rank, rule.uma);
   if (result.negative) {
-    p - 10000;
+    p += -10000;
   }
-  if (result.kill) {
-    p + 10000;
+  if (result.kill && result.negative) {
+    p += 10000;
   }
 
   return RoundDown(p, 1000) / 1000;

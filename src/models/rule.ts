@@ -6,6 +6,33 @@ export enum Uma {
   TWOTHREE = 3,
 }
 
+export enum Round {
+  ONEROUND = 0, // 東風
+  HALFROUND = 1, // 半荘
+}
+
+export const UmaStrings = (uma: Uma) => {
+  switch (uma) {
+    case Uma.FIVETEN:
+      return "5-10";
+    case Uma.ONETWO:
+      return "10-20";
+    case Uma.ONETHREE:
+      return "10-30";
+    case Uma.TWOTHREE:
+      return "20-30";
+  }
+};
+
+export const RoundStrings = (round: Round) => {
+  switch (round) {
+    case Round.ONEROUND:
+      return "東風";
+    case Round.HALFROUND:
+      return "半荘";
+  }
+};
+
 export const RankPointFiveTen = (rank: number): number => {
   switch (rank) {
     case 1:

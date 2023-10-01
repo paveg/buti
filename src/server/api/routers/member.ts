@@ -3,7 +3,12 @@ import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
 export const memberRouter = createTRPCRouter({
   getAll: publicProcedure.query(({ ctx }) => {
-    return ctx.db.member.findMany();
+    return ctx.db.member.findMany({
+      include: {
+        results: true,
+        tipResults: true,
+      },
+    });
   }),
   get: publicProcedure
     .input(z.object({ id: z.string() }))

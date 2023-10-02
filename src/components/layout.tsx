@@ -8,11 +8,10 @@ type Props = {
 };
 
 export const Layout: FC = ({ children }: Props) => {
-  // TODO: Implement navigation bar
   return (
     <>
       <Navigation />
-      {children}
+      <div className="container my-8">{children}</div>
       <Toaster />
     </>
   );

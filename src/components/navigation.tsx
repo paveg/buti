@@ -7,7 +7,7 @@ import { Button } from "~/components/ui/button";
 export const Navigation: FC = ({ ...props }) => {
   const router = useRouter();
   return (
-    <div className="hidden flex-col md:flex">
+    <div className="flex-col md:flex">
       <div className="border-b">
         <div className="container flex h-14 items-center px-4">
           <nav

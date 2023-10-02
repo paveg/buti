@@ -1,8 +1,8 @@
 import {
   gameRouter,
   memberRouter,
-  ruleRouter,
   parlorRouter,
+  ruleRouter,
 } from "~/server/api/routers";
 import { createTRPCRouter } from "~/server/api/trpc";
 

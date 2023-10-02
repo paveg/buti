@@ -34,27 +34,28 @@ import {
 } from "~/models/rule";
 import { api } from "~/utils/api";
 
-export function RuleForm() {
-  const { toast } = useToast();
-  const formSchema = z.object({
-    rate: z.number({
-      required_error: "レートを選択してください",
-    }),
-    uma: z
-      .number({
-        required_error: "ウマを選択してください",
-      })
-      .min(Uma.FIVETEN)
-      .max(Uma.TWOTHREE),
-    defaultPoint: z.number(),
-    referencePoint: z.number(),
-    tip: z.number(),
-    round: z.number(),
-    killBonus: z.boolean(),
-  });
+export const RuleFormSchema = z.object({
+  rate: z.number({
+    required_error: "レートを選択してください",
+  }),
+  uma: z
+    .number({
+      required_error: "ウマを選択してください",
+    })
+    .min(Uma.FIVETEN)
+    .max(Uma.TWOTHREE),
+  defaultPoint: z.number(),
+  referencePoint: z.number(),
+  tip: z.number(),
+  round: z.number().min(Round.ONEROUND).max(Round.HALFROUND),
+  killBonus: z.boolean(),
+});
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+export const RuleForm: FC = () => {
+  const { toast } = useToast();
+
+  const form = useForm<z.infer<typeof RuleFormSchema>>({
+    resolver: zodResolver(RuleFormSchema),
     defaultValues: {
       rate: 100,
       uma: Uma.ONETHREE,
@@ -71,10 +72,10 @@ export function RuleForm() {
   const { refetch } = api.rule.getAll.useQuery();
   const { mutateAsync } = api.rule.findOrCreate.useMutation();
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  function onSubmit(values: z.infer<typeof RuleFormSchema>) {
     if (rule) {
       toast({
-        title: "ルールが既に存在します",
+        title: "同じルールが既に存在します",
         variant: "destructive",
       });
       return;
@@ -280,4 +281,4 @@ export function RuleForm() {
       </Form>
     </div>
   );
-}
+};

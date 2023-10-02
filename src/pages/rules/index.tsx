@@ -1,7 +1,7 @@
 import { Rule } from "@prisma/client";
 import { useState } from "react";
+import { RuleForm } from "~/components/forms/ruleForm";
 import { Layout } from "~/components/layout";
-import { RuleForm } from "~/components/rule/form";
 import { Button } from "~/components/ui/button";
 import {
   Table,
@@ -12,8 +12,8 @@ import {
   TableHeader,
   TableRow,
 } from "~/components/ui/table";
+import { RateStrings, RoundStrings, UmaStrings } from "~/models/rule";
 import { api } from "~/utils/api";
-import { RateStrings, RoundStrings, UmaStrings } from "../../models/rule";
 
 export default function () {
   const { data: rules, isLoading } = api.rule.getAll.useQuery();

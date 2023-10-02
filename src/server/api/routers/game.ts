@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { GameFormSchema } from "~/components/forms/gameForm";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
 export const gameRouter = createTRPCRouter({
@@ -21,6 +22,15 @@ export const gameRouter = createTRPCRouter({
       },
     });
   }),
+  getById: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .query(({ ctx, input }) => {
+      return ctx.db.game.findFirst({
+        where: {
+          id: input.id,
+        },
+      });
+    }),
   getByYear: publicProcedure
     .input(z.object({ year: z.number() }))
     .query(({ ctx, input }) => {
@@ -48,4 +58,12 @@ export const gameRouter = createTRPCRouter({
         },
       });
     }),
+  update: publicProcedure.input(GameFormSchema).mutation(({ ctx, input }) => {
+    return ctx.db.game.update({
+      where: {
+        id: input.id,
+      },
+      data: input,
+    });
+  }),
 });

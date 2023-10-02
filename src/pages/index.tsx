@@ -5,6 +5,7 @@ import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { GameEditDialog } from "~/components/games/editDialog";
 import { Layout } from "~/components/layout";
 import { AspectRatio } from "~/components/ui/aspect-ratio";
 import { Button } from "~/components/ui/button";
@@ -114,7 +115,7 @@ export default function Home() {
 
   return (
     <Layout>
-      <h1 className="text-2xl text-center">{year}年の戦績</h1>
+      <h1 className="my-4 text-2xl text-center">{year}年の戦績</h1>
       {!isLoading &&
         games.map((game) => {
           const uniqMembers = UniqueModels<Member>(
@@ -129,16 +130,22 @@ export default function Home() {
             }, 0) ===
               game.headCount * DefaultQuantity;
           const rounds = game.results.length / game.headCount;
+
           return (
-            <Table key={game.id} className="mx-auto">
-              <TableCaption>
+            <Table
+              key={game.id}
+              className="min-w-full text-center text-sm font-light mt-4"
+            >
+              <TableCaption className="caption-top underline">
                 {formatISO(game.date, { representation: "date" })} {game.name}
                 （対局数: {rounds}）
                 {game.parlor.name}
               </TableCaption>
-              <TableHeader>
+              <TableHeader className="font-bold">
                 <TableRow>
-                  <TableHead className="w-[100px]">{}</TableHead>
+                  <TableHead className="w-[100px] text-center">
+                    <GameEditDialog gameId={game.id} />
+                  </TableHead>
                   {uniqMembers.map((member) => {
                     return (
                       <TableHead
@@ -366,7 +373,7 @@ export default function Home() {
             </Table>
           );
         })}
-      <div className="my-2 flex justify-center">
+      <div className="my-8 flex justify-center">
         <Button
           className="mx-1"
           variant="secondary"

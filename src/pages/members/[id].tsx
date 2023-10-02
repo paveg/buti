@@ -2,7 +2,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { Layout } from "~/components/layout";
-import { MemberDetail } from "~/components/member/detail";
+import { MemberDetail } from "~/components/members/detail";
 
 export default function () {
   const router = useRouter();

@@ -12,11 +12,13 @@ import {
   TableHeader,
   TableRow,
 } from "~/components/ui/table";
+import { toast } from "~/components/ui/use-toast";
 import { RateStrings, RoundStrings, UmaStrings } from "~/models/rule";
 import { api } from "~/utils/api";
 
 export default function () {
-  const { data: rules, isLoading } = api.rule.getAll.useQuery();
+  const { data: rules, isLoading, refetch } = api.rule.getAll.useQuery();
+  const { mutateAsync } = api.rule.deleteById.useMutation();
 
   return (
     <Layout>
@@ -33,6 +35,7 @@ export default function () {
               <TableHead>持ち点</TableHead>
               <TableHead>チップ</TableHead>
               <TableHead>飛び賞</TableHead>
+              <TableHead />
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -59,6 +62,30 @@ export default function () {
                     <TableCell className="w-[100px]">{rule.tip}</TableCell>
                     <TableCell className="w-[100px]">
                       {rule.killBonus ? "有" : "無"}
+                    </TableCell>
+                    <TableCell className="w-[100px]">
+                      <Button
+                        size="sm"
+                        variant="destructive"
+                        disabled={rule.games.length > 0}
+                        onClick={() => {
+                          mutateAsync(
+                            { id: rule.id },
+                            {
+                              onSuccess: () => {
+                                toast({
+                                  title: "ルールを削除しました",
+                                });
+                              },
+                              onSettled: () => {
+                                refetch();
+                              },
+                            },
+                          );
+                        }}
+                      >
+                        削除
+                      </Button>
                     </TableCell>
                   </TableRow>
                 );

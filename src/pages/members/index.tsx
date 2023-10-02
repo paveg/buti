@@ -1,5 +1,9 @@
+import { member } from "@prisma/client";
+import Link from "next/link";
 import { useRouter } from "next/router";
+import { MemberForm } from "~/components/forms/memberForm";
 import { Layout } from "~/components/layout";
+import { Button } from "~/components/ui/button";
 import {
   Table,
   TableBody,
@@ -9,11 +13,13 @@ import {
   TableHeader,
   TableRow,
 } from "~/components/ui/table";
+import { toast } from "~/components/ui/use-toast";
 import { api } from "~/utils/api";
 
 export default function () {
   const router = useRouter();
-  const { data: members, isLoading } = api.member.getAll.useQuery();
+  const { data: members, isLoading, refetch } = api.member.getAll.useQuery();
+  const { mutateAsync } = api.member.deleteById.useMutation();
 
   return (
     <Layout>
@@ -25,13 +31,15 @@ export default function () {
             <TableHead>平均順位</TableHead>
             <TableHead>連対率</TableHead>
             <TableHead>ラス率</TableHead>
+            <TableHead />
+            <TableHead />
           </TableRow>
         </TableHeader>
         <TableBody>
           {!isLoading &&
             members?.map((member) => {
               const matchCount = member.results.length;
-              const averageRank = member.results.reduce((acc, result) => {
+              const rankedCount = member.results.reduce((acc, result) => {
                 switch (result.rank) {
                   case 1:
                     return acc + 1;
@@ -63,18 +71,50 @@ export default function () {
                   matchCount) *
                 100
               ).toFixed(2);
+              const avgRank = (rankedCount / matchCount).toFixed(2);
               return (
-                <TableRow onClick={() => router.push(`/members/${member.id}`)}>
+                <TableRow key={member.id}>
                   <TableCell className="w-[120px]">{member.name}</TableCell>
                   <TableCell>{matchCount}</TableCell>
-                  <TableCell>{(averageRank / matchCount).toFixed(2)}</TableCell>
-                  <TableCell>{winRate}%</TableCell>
-                  <TableCell>{lastPlaceRate}%</TableCell>
+                  <TableCell>{isNaN(avgRank) ? "-" : `${avgRank}位`}</TableCell>
+                  <TableCell>{isNaN(winRate) ? "-" : `${winRate}%`}</TableCell>
+                  <TableCell>
+                    {isNaN(lastPlaceRate) ? "-" : `${lastPlaceRate}%`}
+                  </TableCell>
+                  <TableCell className="w-[160px]">
+                    <div className="flex space-x-4">
+                      <Button size="sm" className="flex-1" asChild>
+                        <Link href={`/members/${member.id}`}>詳細</Link>
+                      </Button>
+                      <Button
+                        className="flex-1"
+                        size="sm"
+                        disabled={member.results.length > 0}
+                        variant="destructive"
+                        onClick={() => {
+                          mutateAsync(
+                            { id: member.id },
+                            {
+                              onSuccess: () => {
+                                toast({
+                                  title: "メンバーを削除しました",
+                                });
+                                refetch();
+                              },
+                            },
+                          );
+                        }}
+                      >
+                        削除
+                      </Button>
+                    </div>
+                  </TableCell>
                 </TableRow>
               );
             })}
         </TableBody>
       </Table>
+      <MemberForm members={members} />
     </Layout>
   );
 }

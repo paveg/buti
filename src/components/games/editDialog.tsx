@@ -17,7 +17,7 @@ type Props = {
   gameId: string;
 };
 
-export const GameEditDialog: FC<Props> = ({ gameId }: Props) => {
+export const GameEditDialog: FC<Props> = ({ gameId, year }: Props) => {
   const { data: game, isLoading } = api.game.getById.useQuery({ id: gameId });
 
   return (
@@ -33,7 +33,7 @@ export const GameEditDialog: FC<Props> = ({ gameId }: Props) => {
             <DialogHeader>
               <DialogTitle>{game.name}を編集</DialogTitle>
             </DialogHeader>
-            <GameForm game={game}>
+            <GameForm gameId={gameId}>
               <DialogFooter>
                 <Button type="submit">保存</Button>
               </DialogFooter>

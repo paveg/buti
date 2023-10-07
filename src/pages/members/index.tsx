@@ -1,9 +1,9 @@
 import { member } from "@prisma/client";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { MemberForm } from "~/components/forms/memberForm";
-import { Layout } from "~/components/layout";
-import { Button } from "~/components/ui/button";
+import { CreateMemberForm } from "~/components/form/createMember";
+import { Layout } from "~/layouts";
+import { Button } from "~/ui/button";
 import {
   Table,
   TableBody,
@@ -12,8 +12,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "~/components/ui/table";
-import { toast } from "~/components/ui/use-toast";
+} from "~/ui/table";
+import { toast } from "~/ui/use-toast";
 import { api } from "~/utils/api";
 
 export default function () {
@@ -114,7 +114,7 @@ export default function () {
             })}
         </TableBody>
       </Table>
-      <MemberForm members={members} />
+      <CreateMemberForm members={members} />
     </Layout>
   );
 }

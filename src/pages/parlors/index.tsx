@@ -1,7 +1,7 @@
-import { ParlorForm } from "~/components/forms/parlorForm";
-import { Layout } from "~/components/layout";
-import { Button } from "~/components/ui/button";
-import { Skeleton } from "~/components/ui/skeleton";
+import { CreateParlorForm } from "~/components/form/createParlor";
+import { Layout } from "~/layouts";
+import { Button } from "~/ui/button";
+import { Skeleton } from "~/ui/skeleton";
 import {
   Table,
   TableBody,
@@ -9,8 +9,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "~/components/ui/table";
-import { useToast } from "~/components/ui/use-toast";
+} from "~/ui/table";
+import { useToast } from "~/ui/use-toast";
 import { api } from "~/utils/api";
 
 export default function () {
@@ -43,22 +43,21 @@ export default function () {
                 </TableRow>
               ))
             : parlors?.map((parlor) => {
+                const matchCount = parlor.games.length;
                 return (
                   <TableRow key={parlor.id}>
                     <TableCell key={`${parlor.id}-name`}>
                       {parlor.name}
                     </TableCell>
                     <TableCell key={`${parlor.id}-game-count`}>
-                      {parlor.games.reduce((acc, game) => {
-                        return acc + game.results.length;
-                      }, 0)}
+                      {matchCount}
                       局
                     </TableCell>
                     <TableCell key={`${parlor.id}-delete`}>
                       <Button
                         size="sm"
                         variant="destructive"
-                        disabled={parlor.games.length > 0}
+                        disabled={matchCount > 0}
                         onClick={() =>
                           mutateAsync(
                             { id: parlor.id },
@@ -81,7 +80,7 @@ export default function () {
               })}
         </TableBody>
       </Table>
-      <ParlorForm parlors={parlors} />
+      <CreateParlorForm parlors={parlors} />
     </Layout>
   );
 }

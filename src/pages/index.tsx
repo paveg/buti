@@ -5,11 +5,12 @@ import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { GameCreateDialog } from "~/components/games/createDialog";
-import { GameEditDialog } from "~/components/games/editDialog";
-import { Layout } from "~/components/layout";
+import { CreateGameDialog } from "~/components/dialog/createGame";
+import { EditGameDialog } from "~/components/dialog/editGame";
 import { AspectRatio } from "~/components/ui/aspect-ratio";
-import { Button } from "~/components/ui/button";
+import { Layout } from "~/layouts";
+import { DefaultQuantity } from "~/models/rule";
+import { Button } from "~/ui/button";
 import {
   Table,
   TableBody,
@@ -18,8 +19,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "~/components/ui/table";
-import { DefaultQuantity } from "~/models/rule";
+} from "~/ui/table";
 
 import { api } from "~/utils/api";
 import { GroupBy, UniqueModels } from "~/utils/model";
@@ -117,7 +117,7 @@ export default function Home() {
   return (
     <Layout>
       <h1 className="my-4 text-2xl text-center">{year}年の戦績</h1>
-      <GameCreateDialog />
+      <CreateGameDialog />
       {!isLoading &&
         games.map((game) => {
           const uniqMembers = UniqueModels<Member>(
@@ -150,7 +150,7 @@ export default function Home() {
               <TableHeader className="font-bold">
                 <TableRow>
                   <TableHead className="w-[100px] text-left">
-                    <GameEditDialog gameId={game.id} />
+                    <EditGameDialog gameId={game.id} />
                   </TableHead>
                   {uniqMembers.map((member) => {
                     return (

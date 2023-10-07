@@ -1,6 +1,6 @@
-import { z } from "zod";
-import { RuleFormSchema } from "~/components/forms/ruleForm";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import { OnlyIdObject } from "~/validations/common";
+import { RuleFormSchema } from "~/validations/rule";
 
 export const ruleRouter = createTRPCRouter({
   getAll: publicProcedure.query(({ ctx }) => {
@@ -24,13 +24,11 @@ export const ruleRouter = createTRPCRouter({
 
       return newRule;
     }),
-  deleteById: publicProcedure
-    .input(z.object({ id: z.string() }))
-    .mutation(({ ctx, input }) => {
-      return ctx.db.rule.delete({
-        where: {
-          id: input.id,
-        },
-      });
-    }),
+  deleteById: publicProcedure.input(OnlyIdObject).mutation(({ ctx, input }) => {
+    return ctx.db.rule.delete({
+      where: {
+        id: input.id,
+      },
+    });
+  }),
 });

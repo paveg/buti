@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { GameDetail } from "~/components/games/detail";
-import { Layout } from "~/components/layout";
+import { GameDetailContainer } from "~/components/container/gameDetail";
+import { Layout } from "~/layouts";
 
 export default function () {
   const router = useRouter();
@@ -10,7 +10,7 @@ export default function () {
   return (
     <Layout>
       <div className="mx-auto m-4 container">
-        {id && <GameDetail id={id} />}
+        {id && <GameDetailContainer id={id} />}
       </div>
     </Layout>
   );

@@ -1,7 +1,7 @@
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { MemberDetailContainer } from "~/components/container/memberDetail";
+import { MemberDetailContainer } from "~/components/container/memberDetailContainer";
 import { Layout } from "~/layouts";
 
 export default function () {

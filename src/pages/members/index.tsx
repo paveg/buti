@@ -1,7 +1,7 @@
 import { member } from "@prisma/client";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { CreateMemberForm } from "~/components/form/createMember";
+import { CreateMemberForm } from "~/components/form/createMemberForm";
 import { Layout } from "~/layouts";
 import { Button } from "~/ui/button";
 import {

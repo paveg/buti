@@ -12,8 +12,7 @@ import { api } from "~/utils/api";
 type Props = {
   id: string;
 };
-export const MemberDetailContainer: FC<Props> = (props) => {
-  const { id } = props;
+export const MemberDetailContainer: FC<Props> = ({ id }: props) => {
   const { data: member, isLoading } = api.member.get.useQuery({ id: id });
 
   return (

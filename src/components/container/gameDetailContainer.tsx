@@ -1,7 +1,7 @@
 import { FC } from "react";
 
 import { Member } from "@prisma/client";
-import { CreateGameResultDialog } from "~/components/dialog/createGameResult";
+import { CreateGameResultDialog } from "~/components/dialog/createGameResultDialog";
 import { Button } from "~/ui/button";
 import {
   Table,
@@ -17,9 +17,7 @@ import { GroupBy, UniqueModels } from "~/utils/model";
 type Props = {
   id: string;
 };
-export const GameDetailContainer: FC<Props> = (props) => {
-  const { id } = props;
-
+export const GameDetailContainer: FC<Props> = ({ id }: Props) => {
   const { data: game, isLoading } = api.game.getById.useQuery({ id: id });
   if (isLoading) {
     return <>Loading...</>;

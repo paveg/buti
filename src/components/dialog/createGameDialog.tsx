@@ -1,6 +1,6 @@
 import { Game } from "@prisma/client";
 import { FC } from "react";
-import { CreateGameForm } from "~/components/form/createGame";
+import { CreateGameForm } from "~/components/form/createGameForm";
 import { Button } from "~/ui/button";
 import {
   Dialog,

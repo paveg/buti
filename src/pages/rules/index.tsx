@@ -1,6 +1,6 @@
 import { Rule } from "@prisma/client";
 import { useState } from "react";
-import { CreateRuleForm } from "~/components/form/createRule";
+import { CreateRuleForm } from "~/components/form/createRuleForm";
 import { Layout } from "~/layouts";
 import { RateStrings, RoundStrings, UmaStrings } from "~/models/rule";
 import { Button } from "~/ui/button";

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { GameDetailContainer } from "~/components/container/gameDetail";
+import { GameDetailContainer } from "~/components/container/gameDetailContainer";
 import { Layout } from "~/layouts";
 
 export default function () {

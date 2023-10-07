@@ -67,7 +67,7 @@ export const CreateGameForm: FC<Props> = ({ children }: Props) => {
           title: "ゲームを作成しました",
         });
 
-        // queryClient.invalidateQueries(queryKey);
+        queryClient.invalidateQueries(queryKey);
       },
       onError: (err) => {
         toast({

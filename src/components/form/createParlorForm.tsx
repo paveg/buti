@@ -17,12 +17,9 @@ import { useToast } from "~/ui/use-toast";
 import { api } from "~/utils/api";
 import { ParlorFormSchema } from "~/validations/parlor";
 
-type Props = {
-  parlors: Parlor[];
-};
-
-export const CreateParlorForm: FC<Props> = ({ parlors }: Props) => {
+export const CreateParlorForm: FC = () => {
   const { toast } = useToast();
+  const { data: parlors } = api.parlor.getAll.useQuery();
   const { refetch } = api.parlor.getAll.useQuery();
   const { mutateAsync } = api.parlor.create.useMutation();
 

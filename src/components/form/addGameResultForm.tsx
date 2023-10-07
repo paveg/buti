@@ -35,7 +35,7 @@ import { RadioGroup, RadioGroupItem } from "~/ui/radio-group";
 import { Skeleton } from "~/ui/skeleton";
 import { toast } from "~/ui/use-toast";
 import { api } from "~/utils/api";
-import { SearchMemberForm } from "./searchMember";
+import { SearchMemberForm } from "./searchMemberForm";
 
 type Props = {
   children?: React.ReactNode;

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { GameDetail } from "~/components/games/detail";
+import { GameDetailContainer } from "~/components/container/gameDetail";
 import { Layout } from "~/layouts";
 
 export default function () {
@@ -10,7 +10,7 @@ export default function () {
   return (
     <Layout>
       <div className="mx-auto m-4 container">
-        {id && <GameDetail id={id} />}
+        {id && <GameDetailContainer id={id} />}
       </div>
     </Layout>
   );

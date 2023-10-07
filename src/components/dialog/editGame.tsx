@@ -1,6 +1,6 @@
 import { Game } from "@prisma/client";
 import { FC } from "react";
-import { GameForm } from "~/components/forms/gameForm";
+import { EditGameForm } from "~/components/form/editGame";
 import { Button } from "~/ui/button";
 import {
   Dialog,
@@ -17,7 +17,7 @@ type Props = {
   gameId: string;
 };
 
-export const GameEditDialog: FC<Props> = ({ gameId, year }: Props) => {
+export const EditGameDialog: FC<Props> = ({ gameId, year }: Props) => {
   const { data: game, isLoading } = api.game.getById.useQuery({ id: gameId });
 
   return (
@@ -35,11 +35,11 @@ export const GameEditDialog: FC<Props> = ({ gameId, year }: Props) => {
             <DialogHeader>
               <DialogTitle>{game.name}を編集</DialogTitle>
             </DialogHeader>
-            <GameForm gameId={gameId}>
+            <EditGameForm gameId={gameId}>
               <DialogFooter>
                 <Button type="submit">保存</Button>
               </DialogFooter>
-            </GameForm>
+            </EditGameForm>
           </DialogContent>
         </Dialog>
       )}

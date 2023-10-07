@@ -1,6 +1,6 @@
-import { z } from "zod";
-import { ParlorFormSchema } from "~/components/forms/parlorForm";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import { OnlyIdObject } from "~/validations/common";
+import { ParlorFormSchema } from "~/validations/parlor";
 
 export const parlorRouter = createTRPCRouter({
   getAll: publicProcedure.query(({ ctx }) => {
@@ -21,13 +21,11 @@ export const parlorRouter = createTRPCRouter({
 
     return newParlor;
   }),
-  deleteById: publicProcedure
-    .input(z.object({ id: z.string() }))
-    .mutation(({ ctx, input }) => {
-      return ctx.db.parlor.delete({
-        where: {
-          id: input.id,
-        },
-      });
-    }),
+  deleteById: publicProcedure.input(OnlyIdObject).mutation(({ ctx, input }) => {
+    return ctx.db.parlor.delete({
+      where: {
+        id: input.id,
+      },
+    });
+  }),
 });

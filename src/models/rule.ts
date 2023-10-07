@@ -7,8 +7,9 @@ export enum Uma {
 }
 
 export enum Round {
-  ONEROUND = 0, // 東風
+  QUATERROUND = 0, // 東風
   HALFROUND = 1, // 半荘
+  FULLROUND = 2, // 一荘
 }
 
 export const UmaStrings = (uma: Uma) => {
@@ -26,7 +27,7 @@ export const UmaStrings = (uma: Uma) => {
 
 export const RoundStrings = (round: Round) => {
   switch (round) {
-    case Round.ONEROUND:
+    case Round.QUATERROUND:
       return "東風";
     case Round.HALFROUND:
       return "半荘";

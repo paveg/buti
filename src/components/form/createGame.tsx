@@ -8,9 +8,18 @@ import { ja } from "date-fns/locale";
 import { FC } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import { MemberCombobox } from "~/components/combobox/memberCombobox";
+import { ParlorCombobox } from "~/components/combobox/parlorCombobox";
 import { cn } from "~/lib/utils";
 import { Button } from "~/ui/button";
 import { Calendar } from "~/ui/calendar";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+} from "~/ui/command";
 import {
   Form,
   FormControl,
@@ -21,84 +30,54 @@ import {
   FormMessage,
 } from "~/ui/form";
 import { Input } from "~/ui/input";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "~/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "~/ui/popover";
 import { RadioGroup, RadioGroupItem } from "~/ui/radio-group";
+import { Skeleton } from "~/ui/skeleton";
 import { toast } from "~/ui/use-toast";
 import { api } from "~/utils/api";
-import { MemberCombobox } from "../parts/memberCombobox";
-import { ParlorCombobox } from "../parts/parlorCombobox";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-} from "../../ui/command";
-import { Skeleton } from "../../ui/skeleton";
+import { CreateGameFormSchema } from "~/validations/game";
 
 type Props = {
-  gameId: string;
   children?: React.ReactNode;
 };
 
-export const GameFormSchema = z.object({
-  id: z.string({ required_error: "ゲームIDが見つかりません" }),
-  name: z
-    .string()
-    .nonempty({ message: "ゲーム名を入力してください" })
-    .max(80, { message: "ゲーム名は80文字以内で入力してください" }),
-  date: z.date(),
-  parlorId: z.string(),
-  ruleId: z.string(),
-  headCount: z.number().min(3).max(4),
-  seatCost: z.number().min(0).max(1000000, {
-    message: "場代は100万円以下で入力してください",
-  }),
-});
-
-export const GameForm: FC<Props> = ({ gameId, children }: Props) => {
-  const {
-    data: game,
-    isLoading,
-    refetch,
-  } = api.game.getById.useQuery({ id: gameId });
+export const CreateGameForm: FC<Props> = ({ children }: Props) => {
   const queryKey = api.game.getByYear.getQueryKey();
   const { data: parlors, isLoading: isLoadingParlors } =
     api.parlor.getAll.useQuery();
   const { data: rules, isLoading: isLoadingRules } = api.rule.getAll.useQuery();
-  const { mutateAsync } = api.game.update.useMutation();
+  const { mutateAsync } = api.game.create.useMutation();
   const queryClient = useQueryClient();
-  const form = useForm<z.infer<typeof GameFormSchema>>({
-    resolver: zodResolver(GameFormSchema),
-    defaultValues: { ...game },
+  const form = useForm<z.infer<typeof CreateGameFormSchema>>({
+    resolver: zodResolver(CreateGameFormSchema),
+    defaultValues: {
+      name: "",
+      date: new Date(),
+      parlorId: "",
+      ruleId: "",
+      headCount: 4,
+      seatCost: 0,
+    },
   });
 
-  function onSubmit(values: z.infer<typeof GameFormSchema>) {
-    return mutateAsync(
-      { id: game.id, ...values },
-      {
-        onSuccess: (res) => {
-          toast({
-            title: "ゲームを更新しました",
-          });
-          refetch();
-          queryClient.invalidateQueries(queryKey);
-        },
-        onError: (err) => {
-          toast({
-            variant: "destructive",
-            title: "ゲームの更新に失敗しました",
-            description: err.message,
-          });
-          console.error(err);
-        },
-        onSettled: () => {},
+  function onSubmit(values: z.infer<typeof CreateGameFormSchema>) {
+    return mutateAsync(values, {
+      onSuccess: (res) => {
+        toast({
+          title: "ゲームを作成しました",
+        });
+
+        // queryClient.invalidateQueries(queryKey);
       },
-    );
+      onError: (err) => {
+        toast({
+          variant: "destructive",
+          title: "ゲームの作成に失敗しました",
+          description: err.message,
+        });
+      },
+      onSettled: () => {},
+    });
   }
 
   return (
@@ -115,7 +94,7 @@ export const GameForm: FC<Props> = ({ gameId, children }: Props) => {
                   <FormControl>
                     <Input
                       placeholder="ゲーム名"
-                      className="w-[220px]"
+                      className="w-[250px]"
                       {...field}
                     />
                   </FormControl>
@@ -136,7 +115,7 @@ export const GameForm: FC<Props> = ({ gameId, children }: Props) => {
                       <Button
                         variant={"outline"}
                         className={cn(
-                          "w-[220px] pl-3 text-left font-normal",
+                          "w-[250px] pl-3 text-left font-normal",
                           !field.value && "text-muted-foreground",
                         )}
                       >
@@ -212,7 +191,7 @@ export const GameForm: FC<Props> = ({ gameId, children }: Props) => {
                           variant="outline"
                           role="combobox"
                           className={cn(
-                            "w-[220px] justify-between",
+                            "w-[250px] justify-between",
                             !field.value && "text-muted-foreground",
                           )}
                         >
@@ -225,7 +204,7 @@ export const GameForm: FC<Props> = ({ gameId, children }: Props) => {
                         </Button>
                       </FormControl>
                     </PopoverTrigger>
-                    <PopoverContent className="w-[200px] p-0">
+                    <PopoverContent className="w-[250px] p-0">
                       <Command>
                         <CommandInput
                           placeholder="雀荘を検索"
@@ -272,7 +251,7 @@ export const GameForm: FC<Props> = ({ gameId, children }: Props) => {
                   <FormControl>
                     <Input
                       placeholder="場代"
-                      className="w-[220px]"
+                      className="w-[250px]"
                       defaultValue={field.value ?? 0}
                       onChange={(e) => field.onChange(Number(e.target.value))}
                     />
@@ -298,7 +277,7 @@ export const GameForm: FC<Props> = ({ gameId, children }: Props) => {
                           variant="outline"
                           role="combobox"
                           className={cn(
-                            "w-[220px] justify-between",
+                            "w-[280px] justify-between",
                             !field.value && "text-muted-foreground",
                           )}
                         >
@@ -309,7 +288,7 @@ export const GameForm: FC<Props> = ({ gameId, children }: Props) => {
                         </Button>
                       </FormControl>
                     </PopoverTrigger>
-                    <PopoverContent className="w-[200px] p-0">
+                    <PopoverContent className="w-[250px] p-0">
                       <Command>
                         <CommandInput
                           placeholder="ルールを検索"
@@ -340,7 +319,7 @@ export const GameForm: FC<Props> = ({ gameId, children }: Props) => {
                       </Command>
                     </PopoverContent>
                   </Popover>
-                  <FormDescription>ルール</FormDescription>
+
                   <FormMessage />
                 </FormItem>
               )}

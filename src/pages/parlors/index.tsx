@@ -1,4 +1,4 @@
-import { ParlorForm } from "~/components/forms/parlorForm";
+import { CreateParlorForm } from "~/components/form/createParlor";
 import { Layout } from "~/layouts";
 import { Button } from "~/ui/button";
 import { Skeleton } from "~/ui/skeleton";
@@ -43,7 +43,7 @@ export default function () {
                 </TableRow>
               ))
             : parlors?.map((parlor) => {
-              const matchCount = parlor.games.length;
+                const matchCount = parlor.games.length;
                 return (
                   <TableRow key={parlor.id}>
                     <TableCell key={`${parlor.id}-name`}>
@@ -80,7 +80,7 @@ export default function () {
               })}
         </TableBody>
       </Table>
-      <ParlorForm parlors={parlors} />
+      <CreateParlorForm parlors={parlors} />
     </Layout>
   );
 }

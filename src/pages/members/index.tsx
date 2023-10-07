@@ -1,7 +1,7 @@
 import { member } from "@prisma/client";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { MemberForm } from "~/components/forms/memberForm";
+import { CreateMemberForm } from "~/components/form/createMember";
 import { Layout } from "~/layouts";
 import { Button } from "~/ui/button";
 import {
@@ -114,7 +114,7 @@ export default function () {
             })}
         </TableBody>
       </Table>
-      <MemberForm members={members} />
+      <CreateMemberForm members={members} />
     </Layout>
   );
 }

@@ -8,9 +8,18 @@ import { ja } from "date-fns/locale";
 import { FC } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import { MemberCombobox } from "~/components/combobox/memberCombobox";
+import { ParlorCombobox } from "~/components/combobox/parlorCombobox";
 import { cn } from "~/lib/utils";
 import { Button } from "~/ui/button";
 import { Calendar } from "~/ui/calendar";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+} from "~/ui/command";
 import {
   Form,
   FormControl,
@@ -21,25 +30,12 @@ import {
   FormMessage,
 } from "~/ui/form";
 import { Input } from "~/ui/input";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "~/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "~/ui/popover";
 import { RadioGroup, RadioGroupItem } from "~/ui/radio-group";
+import { Skeleton } from "~/ui/skeleton";
 import { toast } from "~/ui/use-toast";
 import { api } from "~/utils/api";
-import { MemberCombobox } from "../parts/memberCombobox";
-import { ParlorCombobox } from "../parts/parlorCombobox";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-} from "../../ui/command";
-import { Skeleton } from "../../ui/skeleton";
-import { MemberSearchForm } from "./memberSearchForm";
+import { SearchMemberForm } from "./searchMember";
 
 type Props = {
   children?: React.ReactNode;

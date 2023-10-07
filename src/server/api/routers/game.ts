@@ -1,10 +1,10 @@
-import { z } from "zod";
-import {
-  CreateGameForm,
-  CreateGameFormSchema,
-} from "~/components/forms/createGameForm";
-import { GameFormSchema } from "~/components/forms/gameForm";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import { OnlyIdObject } from "~/validations/common";
+import {
+  CreateGameFormSchema,
+  EditGameFormSchema,
+  OnlyYearObject,
+} from "~/validations/game";
 
 export const gameRouter = createTRPCRouter({
   getAll: publicProcedure.query(({ ctx }) => {
@@ -26,60 +26,58 @@ export const gameRouter = createTRPCRouter({
       },
     });
   }),
-  getById: publicProcedure
-    .input(z.object({ id: z.string() }))
-    .query(({ ctx, input }) => {
-      return ctx.db.game.findFirst({
-        where: {
-          id: input.id,
-        },
-        include: {
-          results: {
-            include: {
-              member: true,
-            },
-            orderBy: {
-              sequence: "asc",
-            },
-          },
-        },
-      });
-    }),
-  getByYear: publicProcedure
-    .input(z.object({ year: z.number() }))
-    .query(({ ctx, input }) => {
-      return ctx.db.game.findMany({
-        include: {
-          rule: true,
-          parlor: true,
-          tipResults: true,
-          results: {
-            include: {
-              member: true,
-            },
-            orderBy: {
-              member: {
-                name: "asc",
-              },
-            },
-          },
-        },
-        where: {
-          date: {
-            gte: new Date(`${input.year}-01-01`),
-            lt: new Date(`${input.year}-12-31`),
-          },
-        },
-      });
-    }),
-  update: publicProcedure.input(GameFormSchema).mutation(({ ctx, input }) => {
-    return ctx.db.game.update({
+  getById: publicProcedure.input(OnlyIdObject).query(({ ctx, input }) => {
+    return ctx.db.game.findFirst({
       where: {
         id: input.id,
       },
-      data: input,
+      include: {
+        results: {
+          include: {
+            member: true,
+          },
+          orderBy: {
+            sequence: "asc",
+          },
+        },
+      },
     });
   }),
+  getByYear: publicProcedure.input(OnlyYearObject).query(({ ctx, input }) => {
+    return ctx.db.game.findMany({
+      include: {
+        rule: true,
+        parlor: true,
+        tipResults: true,
+        results: {
+          include: {
+            member: true,
+          },
+          orderBy: {
+            member: {
+              name: "asc",
+            },
+          },
+        },
+      },
+      where: {
+        date: {
+          gte: new Date(`${input.year}-01-01`),
+          lt: new Date(`${input.year}-12-31`),
+        },
+      },
+    });
+  }),
+  update: publicProcedure
+    .input(EditGameFormSchema)
+    .mutation(({ ctx, input }) => {
+      return ctx.db.game.update({
+        where: {
+          id: input.id,
+        },
+        data: input,
+      });
+    }),
   create: publicProcedure
     .input(CreateGameFormSchema)
     .mutation(({ ctx, input }) => {

@@ -1,6 +1,6 @@
-import { z } from "zod";
-import { MemberFormSchema } from "~/components/forms/memberForm";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import { OnlyIdObject } from "~/validations/common";
+import { MemberFormSchema } from "~/validations/member";
 
 export const memberRouter = createTRPCRouter({
   getAll: publicProcedure.query(({ ctx }) => {
@@ -11,30 +11,28 @@ export const memberRouter = createTRPCRouter({
       },
     });
   }),
-  get: publicProcedure
-    .input(z.object({ id: z.string() }))
-    .query(({ ctx, input }) => {
-      return ctx.db.member.findUnique({
-        include: {
-          results: {
-            include: {
-              game: {
-                include: {
-                  results: {
-                    orderBy: {
-                      sequence: "asc",
-                    },
+  get: publicProcedure.input(OnlyIdObject).query(({ ctx, input }) => {
+    return ctx.db.member.findUnique({
+      include: {
+        results: {
+          include: {
+            game: {
+              include: {
+                results: {
+                  orderBy: {
+                    sequence: "asc",
                   },
                 },
               },
             },
           },
         },
-        where: {
-          id: `${input.id}`,
-        },
-      });
-    }),
+      },
+      where: {
+        id: `${input.id}`,
+      },
+    });
+  }),
   create: publicProcedure.input(MemberFormSchema).mutation(({ ctx, input }) => {
     const newMember = ctx.db.member.create({
       data: input,
@@ -42,13 +40,11 @@ export const memberRouter = createTRPCRouter({
 
     return newMember;
   }),
-  deleteById: publicProcedure
-    .input(z.object({ id: z.string() }))
-    .mutation(({ ctx, input }) => {
-      return ctx.db.member.delete({
-        where: {
-          id: input.id,
-        },
-      });
-    }),
+  deleteById: publicProcedure.input(OnlyIdObject).mutation(({ ctx, input }) => {
+    return ctx.db.member.delete({
+      where: {
+        id: input.id,
+      },
+    });
+  }),
 });

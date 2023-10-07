@@ -1,6 +1,6 @@
 import { Game } from "@prisma/client";
 import { FC } from "react";
-import { CreateGameForm } from "~/components/forms/createGameForm";
+import { AddGameResultForm } from "~/components/form/addGameResultForm";
 import { Button } from "~/ui/button";
 import {
   Dialog,
@@ -12,25 +12,29 @@ import {
   DialogTrigger,
 } from "~/ui/dialog";
 
-export const GameCreateDialog: FC = () => {
+type Props = {
+  game: Game;
+};
+
+export const CreateGameResultDialog: FC<Props> = ({ game }: Props) => {
   return (
     <Dialog>
       <DialogTrigger asChild>
         <div className="flex">
           <Button className="ml-auto" size="sm">
-            戦績を追加
+            対局を追加
           </Button>
         </div>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>戦績を作成</DialogTitle>
+          <DialogTitle>対局を追加</DialogTitle>
         </DialogHeader>
-        <CreateGameForm>
+        <AddGameResultForm game={game} sequence={0}>
           <DialogFooter>
-            <Button type="submit">作成</Button>
+            <Button type="submit">追加</Button>
           </DialogFooter>
-        </CreateGameForm>
+        </AddGameResultForm>
       </DialogContent>
     </Dialog>
   );

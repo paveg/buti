@@ -2,6 +2,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { FC } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import {
+  RateStrings,
+  Round,
+  RoundStrings,
+  Uma,
+  UmaStrings,
+} from "~/models/rule";
 import { Button } from "~/ui/button";
 import {
   Form,
@@ -25,33 +32,10 @@ import {
 } from "~/ui/select";
 import { Switch } from "~/ui/switch";
 import { useToast } from "~/ui/use-toast";
-import {
-  RateStrings,
-  Round,
-  RoundStrings,
-  Uma,
-  UmaStrings,
-} from "~/models/rule";
 import { api } from "~/utils/api";
+import { RuleFormSchema } from "~/validations/rule";
 
-export const RuleFormSchema = z.object({
-  rate: z.number({
-    required_error: "レートを選択してください",
-  }),
-  uma: z
-    .number({
-      required_error: "ウマを選択してください",
-    })
-    .min(Uma.FIVETEN)
-    .max(Uma.TWOTHREE),
-  defaultPoint: z.number(),
-  referencePoint: z.number(),
-  tip: z.number(),
-  round: z.number().min(Round.ONEROUND).max(Round.HALFROUND),
-  killBonus: z.boolean(),
-});
-
-export const RuleForm: FC = () => {
+export const CreateRuleForm: FC = () => {
   const { toast } = useToast();
 
   const form = useForm<z.infer<typeof RuleFormSchema>>({
@@ -113,11 +97,11 @@ export const RuleForm: FC = () => {
                       <FormItem className="flex items-center space-x-3 space-y-0">
                         <FormControl>
                           <RadioGroupItem
-                            checked={Number(field.value) === Round.ONEROUND}
-                            value={Round.ONEROUND}
+                            checked={Number(field.value) === Round.QUATERROUND}
+                            value={Round.QUATERROUND}
                           />
                         </FormControl>
-                        <FormLabel>{RoundStrings(Round.ONEROUND)}</FormLabel>
+                        <FormLabel>{RoundStrings(Round.QUATERROUND)}</FormLabel>
                       </FormItem>
                       <FormItem className="flex items-center space-x-3 space-y-0">
                         <FormControl>

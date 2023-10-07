@@ -1,7 +1,8 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Parlor } from "@prisma/client";
+import { Member, member } from "@prisma/client";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import { Button } from "~/ui/button";
 import {
   Form,
   FormControl,
@@ -14,35 +15,28 @@ import {
 import { Input } from "~/ui/input";
 import { useToast } from "~/ui/use-toast";
 import { api } from "~/utils/api";
-import { Button } from "../../ui/button";
+import { MemberFormSchema } from "~/validations/member";
 
 type Props = {
-  parlors: Parlor[];
+  members: Member[];
 };
 
-export const ParlorFormSchema = z.object({
-  name: z
-    .string()
-    .nonempty({ message: "雀荘名を入力してください" })
-    .max(80, { message: "雀荘名は80文字以内で入力してください" }),
-});
-
-export const ParlorForm: FC<Props> = ({ parlors }: Props) => {
+export const CreateMemberForm: FC<Props> = ({ members }: Props) => {
   const { toast } = useToast();
-  const { refetch } = api.parlor.getAll.useQuery();
-  const { mutateAsync } = api.parlor.create.useMutation();
+  const { refetch } = api.member.getAll.useQuery();
+  const { mutateAsync } = api.member.create.useMutation();
 
-  const form = useForm<z.infer<typeof ParlorFormSchema>>({
-    resolver: zodResolver(ParlorFormSchema),
+  const form = useForm<z.infer<typeof MemberFormSchema>>({
+    resolver: zodResolver(MemberFormSchema),
     defaultValues: {
       name: "",
     },
   });
 
-  function onSubmit(values: z.infer<typeof ParlorFormSchema>) {
-    if (parlors.map((parlor) => parlor.name).includes(values.name)) {
+  function onSubmit(values: z.infer<typeof MemberFormSchema>) {
+    if (members.map((member) => member.name).includes(values.name)) {
       toast({
-        title: "同じ名前の雀荘が既に存在します",
+        title: "同じ名前のメンバーが既に存在します",
         variant: "destructive",
       });
       return;
@@ -54,7 +48,7 @@ export const ParlorForm: FC<Props> = ({ parlors }: Props) => {
       },
       onSuccess: () => {
         toast({
-          title: "雀荘を追加しました",
+          title: "メンバーを追加しました",
         });
       },
     });
@@ -69,12 +63,12 @@ export const ParlorForm: FC<Props> = ({ parlors }: Props) => {
             name="name"
             render={({ field }) => (
               <FormItem className="space-y-3">
-                <FormLabel>雀荘名</FormLabel>
+                <FormLabel>メンバー名</FormLabel>
                 <FormControl>
-                  <Input placeholder="雀荘名" {...field} />
+                  <Input placeholder="名前" {...field} />
                 </FormControl>
                 <FormDescription>
-                  対局を行う雀荘の名前を入力してください
+                  メンバーの名前を入力してください
                 </FormDescription>
                 <FormMessage />
               </FormItem>

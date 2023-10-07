@@ -1,10 +1,8 @@
 import { FC } from "react";
 
 import { Member } from "@prisma/client";
-import { api } from "~/utils/api";
-import { GroupBy, UniqueModels } from "~/utils/model";
-import { GameResultCreateDialog } from "../gameResults/addDialog";
-import { Button } from "../../ui/button";
+import { CreateGameResultDialog } from "~/components/dialog/createGameResult";
+import { Button } from "~/ui/button";
 import {
   Table,
   TableBody,
@@ -12,12 +10,14 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "../../ui/table";
+} from "~/ui/table";
+import { api } from "~/utils/api";
+import { GroupBy, UniqueModels } from "~/utils/model";
 
 type Props = {
   id: string;
 };
-export const GameDetail: FC<Props> = (props) => {
+export const GameDetailContainer: FC<Props> = (props) => {
   const { id } = props;
 
   const { data: game, isLoading } = api.game.getById.useQuery({ id: id });
@@ -35,7 +35,7 @@ export const GameDetail: FC<Props> = (props) => {
     return (
       <>
         <div className="text-right">
-          <GameResultCreateDialog game={game} />
+          <CreateGameResultDialog game={game} />
         </div>
         {!isLoading && (
           <>
@@ -62,7 +62,7 @@ export const GameDetail: FC<Props> = (props) => {
                       {results.map((result) => {
                         return <TableCell>{result.point}</TableCell>;
                       })}
-                      <TableCell className="w-[200px]">
+                      <TableCell className="w-[250px]">
                         {killer &&
                           `飛び賞: ${killer.name} -> ${deaths.map(
                             (member) => member.name,

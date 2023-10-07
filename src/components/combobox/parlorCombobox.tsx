@@ -21,23 +21,19 @@ import {
   FormLabel,
   FormMessage,
 } from "~/ui/form";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "~/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "~/ui/popover";
 import { Skeleton } from "~/ui/skeleton";
 import { toast } from "~/ui/use-toast";
 import { api } from "~/utils/api";
 
 const FormSchema = z.object({
-  member: z.string({
-    required_error: "Please select a member.",
+  parlor: z.string({
+    required_error: "Please select a parlor.",
   }),
 });
 
-export function MemberCombobox() {
-  const { data: members, isLoading } = api.member.getAll.useQuery();
+export function ParlorCombobox() {
+  const { data: parlors, isLoading } = api.parlor.getAll.useQuery();
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
   });
@@ -62,10 +58,10 @@ export function MemberCombobox() {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <FormField
               control={form.control}
-              name="member"
+              name="parlor"
               render={({ field }) => (
                 <FormItem className="flex flex-col">
-                  <FormLabel>メンバー</FormLabel>
+                  <FormLabel>雀荘</FormLabel>
                   <Popover>
                     <PopoverTrigger asChild>
                       <FormControl>
@@ -73,40 +69,40 @@ export function MemberCombobox() {
                           variant="outline"
                           role="combobox"
                           className={cn(
-                            "w-[240px] justify-between",
+                            "w-[280px] justify-between",
                             !field.value && "text-muted-foreground",
                           )}
                         >
                           {field.value
-                            ? members.find(
-                                (member) => member.id === field.value,
+                            ? parlors.find(
+                                (parlor) => parlor.id === field.value,
                               )?.name
-                            : "メンバーを選択してください"}
+                            : "雀荘を選択してください"}
                           <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                         </Button>
                       </FormControl>
                     </PopoverTrigger>
-                    <PopoverContent className="w-[200px] p-0">
+                    <PopoverContent className="w-[250px] p-0">
                       <Command>
                         <CommandInput
-                          placeholder="メンバーを検索"
+                          placeholder="雀荘を検索"
                           className="h-9"
                         />
-                        <CommandEmpty>メンバーが見つかりません</CommandEmpty>
+                        <CommandEmpty>雀荘が見つかりません</CommandEmpty>
                         <CommandGroup>
-                          {members.map((member) => (
+                          {parlors.map((parlor) => (
                             <CommandItem
-                              value={member.id}
-                              key={member.name}
+                              value={parlor.id}
+                              key={parlor.name}
                               onSelect={() => {
-                                form.setValue("member", member.id);
+                                form.setValue("parlor", parlor.id);
                               }}
                             >
-                              {member.name}
+                              {parlor.name}
                               <CheckIcon
                                 className={cn(
                                   "ml-auto h-4 w-4",
-                                  member.id === field.value
+                                  parlor.id === field.value
                                     ? "opacity-100"
                                     : "opacity-0",
                                 )}
@@ -117,7 +113,7 @@ export function MemberCombobox() {
                       </Command>
                     </PopoverContent>
                   </Popover>
-                  <FormDescription>TODO</FormDescription>
+                  <FormDescription>対局場所</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}

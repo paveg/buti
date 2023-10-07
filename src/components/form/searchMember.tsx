@@ -1,8 +1,17 @@
-import { Skeleton } from "../../ui/skeleton";
+import { Skeleton } from "~/ui/skeleton";
 
 import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
 import type { UseFormReturn } from "react-hook-form";
 import * as z from "zod";
+import { cn } from "~/lib/utils";
+import { Button } from "~/ui/button";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+} from "~/ui/command";
 import {
   Form,
   FormControl,
@@ -13,22 +22,9 @@ import {
   FormMessage,
 } from "~/ui/form";
 import { Input } from "~/ui/input";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "~/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "~/ui/popover";
 import { useToast } from "~/ui/use-toast";
 import { api } from "~/utils/api";
-import { cn } from "../../lib/utils";
-import { Button } from "../../ui/button";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-} from "../../ui/command";
 import { GameResultFormSchema } from "./addGameResultForm";
 
 type Props = {
@@ -36,7 +32,7 @@ type Props = {
   number: number;
 };
 
-export const MemberSearchForm = ({ form, number }: Props) => {
+export const SearchMemberForm = ({ form, number }: Props) => {
   const { data: members, isLoading } = api.member.getAll.useQuery();
 
   return (
@@ -69,7 +65,7 @@ export const MemberSearchForm = ({ form, number }: Props) => {
                     </Button>
                   </FormControl>
                 </PopoverTrigger>
-                <PopoverContent className="w-[200px] p-0">
+                <PopoverContent className="w-[250px] p-0">
                   <Command>
                     <CommandInput
                       placeholder="メンバーを検索"

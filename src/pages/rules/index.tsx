@@ -1,7 +1,8 @@
 import { Rule } from "@prisma/client";
 import { useState } from "react";
-import { RuleForm } from "~/components/forms/ruleForm";
+import { CreateRuleForm } from "~/components/form/createRule";
 import { Layout } from "~/layouts";
+import { RateStrings, RoundStrings, UmaStrings } from "~/models/rule";
 import { Button } from "~/ui/button";
 import {
   Table,
@@ -13,7 +14,6 @@ import {
   TableRow,
 } from "~/ui/table";
 import { toast } from "~/ui/use-toast";
-import { RateStrings, RoundStrings, UmaStrings } from "~/models/rule";
 import { api } from "~/utils/api";
 
 export default function () {
@@ -92,7 +92,7 @@ export default function () {
               })}
           </TableBody>
         </Table>
-        <RuleForm />
+        <CreateRuleForm />
       </div>
     </Layout>
   );

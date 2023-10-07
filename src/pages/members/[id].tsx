@@ -1,7 +1,7 @@
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { Layout } from "~/components/layout";
+import { Layout } from "~/layouts";
 import { MemberDetail } from "~/components/members/detail";
 
 export default function () {

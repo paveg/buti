@@ -1,8 +1,8 @@
 import { Rule } from "@prisma/client";
 import { useState } from "react";
 import { RuleForm } from "~/components/forms/ruleForm";
-import { Layout } from "~/components/layout";
-import { Button } from "~/components/ui/button";
+import { Layout } from "~/layouts";
+import { Button } from "~/ui/button";
 import {
   Table,
   TableBody,
@@ -11,8 +11,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "~/components/ui/table";
-import { toast } from "~/components/ui/use-toast";
+} from "~/ui/table";
+import { toast } from "~/ui/use-toast";
 import { RateStrings, RoundStrings, UmaStrings } from "~/models/rule";
 import { api } from "~/utils/api";
 

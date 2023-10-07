@@ -1,7 +1,7 @@
 import { Game } from "@prisma/client";
 import { FC } from "react";
 import { CreateGameForm } from "~/components/forms/createGameForm";
-import { Button } from "~/components/ui/button";
+import { Button } from "~/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -10,7 +10,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "~/components/ui/dialog";
+} from "~/ui/dialog";
 
 export const GameCreateDialog: FC = () => {
   return (

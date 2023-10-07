@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { GameDetail } from "~/components/games/detail";
-import { Layout } from "~/components/layout";
+import { Layout } from "~/layouts";
 
 export default function () {
   const router = useRouter();

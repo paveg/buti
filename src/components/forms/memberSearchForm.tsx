@@ -1,4 +1,4 @@
-import { Skeleton } from "../ui/skeleton";
+import { Skeleton } from "../../ui/skeleton";
 
 import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
 import type { UseFormReturn } from "react-hook-form";
@@ -11,24 +11,24 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "~/components/ui/form";
-import { Input } from "~/components/ui/input";
+} from "~/ui/form";
+import { Input } from "~/ui/input";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "~/components/ui/popover";
-import { useToast } from "~/components/ui/use-toast";
+} from "~/ui/popover";
+import { useToast } from "~/ui/use-toast";
 import { api } from "~/utils/api";
-import { cn } from "../lib/utils";
-import { Button } from "../ui/button";
+import { cn } from "../../lib/utils";
+import { Button } from "../../ui/button";
 import {
   Command,
   CommandEmpty,
   CommandGroup,
   CommandInput,
   CommandItem,
-} from "../ui/command";
+} from "../../ui/command";
 import { GameResultFormSchema } from "./addGameResultForm";
 
 type Props = {
@@ -46,7 +46,7 @@ export const MemberSearchForm = ({ form, number }: Props) => {
       ) : (
         <FormField
           control={form.control}
-          name={'member'}
+          name={"member"}
           render={({ field }) => (
             <FormItem className="flex flex-col">
               <FormLabel>メンバー{number + 1}</FormLabel>

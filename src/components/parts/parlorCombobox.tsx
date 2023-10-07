@@ -3,15 +3,15 @@ import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
-import { cn } from "~/components/lib/utils";
-import { Button } from "~/components/ui/button";
+import { cn } from "~/lib/utils";
+import { Button } from "~/ui/button";
 import {
   Command,
   CommandEmpty,
   CommandGroup,
   CommandInput,
   CommandItem,
-} from "~/components/ui/command";
+} from "~/ui/command";
 import {
   Form,
   FormControl,
@@ -20,14 +20,14 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "~/components/ui/form";
+} from "~/ui/form";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "~/components/ui/popover";
-import { Skeleton } from "~/components/ui/skeleton";
-import { toast } from "~/components/ui/use-toast";
+} from "~/ui/popover";
+import { Skeleton } from "~/ui/skeleton";
+import { toast } from "~/ui/use-toast";
 import { api } from "~/utils/api";
 
 const FormSchema = z.object({

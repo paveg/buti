@@ -7,9 +7,9 @@ import Link from "next/link";
 import { useState } from "react";
 import { GameCreateDialog } from "~/components/games/createDialog";
 import { GameEditDialog } from "~/components/games/editDialog";
-import { Layout } from "~/components/layout";
+import { Layout } from "~/layouts";
 import { AspectRatio } from "~/components/ui/aspect-ratio";
-import { Button } from "~/components/ui/button";
+import { Button } from "~/ui/button";
 import {
   Table,
   TableBody,
@@ -18,7 +18,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "~/components/ui/table";
+} from "~/ui/table";
 import { DefaultQuantity } from "~/models/rule";
 
 import { api } from "~/utils/api";

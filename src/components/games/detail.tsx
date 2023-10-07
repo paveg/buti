@@ -4,7 +4,7 @@ import { Member } from "@prisma/client";
 import { api } from "~/utils/api";
 import { GroupBy, UniqueModels } from "~/utils/model";
 import { GameResultCreateDialog } from "../gameResults/addDialog";
-import { Button } from "../ui/button";
+import { Button } from "../../ui/button";
 import {
   Table,
   TableBody,
@@ -12,7 +12,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "../ui/table";
+} from "../../ui/table";
 
 type Props = {
   id: string;

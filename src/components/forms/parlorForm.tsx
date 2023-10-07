@@ -10,11 +10,11 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "~/components/ui/form";
-import { Input } from "~/components/ui/input";
-import { useToast } from "~/components/ui/use-toast";
+} from "~/ui/form";
+import { Input } from "~/ui/input";
+import { useToast } from "~/ui/use-toast";
 import { api } from "~/utils/api";
-import { Button } from "../ui/button";
+import { Button } from "../../ui/button";
 
 type Props = {
   parlors: Parlor[];

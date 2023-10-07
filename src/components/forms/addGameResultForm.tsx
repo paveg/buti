@@ -8,9 +8,9 @@ import { ja } from "date-fns/locale";
 import { FC } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { cn } from "~/components/lib/utils";
-import { Button } from "~/components/ui/button";
-import { Calendar } from "~/components/ui/calendar";
+import { cn } from "~/lib/utils";
+import { Button } from "~/ui/button";
+import { Calendar } from "~/ui/calendar";
 import {
   Form,
   FormControl,
@@ -19,15 +19,15 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "~/components/ui/form";
-import { Input } from "~/components/ui/input";
+} from "~/ui/form";
+import { Input } from "~/ui/input";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "~/components/ui/popover";
-import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
-import { toast } from "~/components/ui/use-toast";
+} from "~/ui/popover";
+import { RadioGroup, RadioGroupItem } from "~/ui/radio-group";
+import { toast } from "~/ui/use-toast";
 import { api } from "~/utils/api";
 import { MemberCombobox } from "../parts/memberCombobox";
 import { ParlorCombobox } from "../parts/parlorCombobox";
@@ -37,8 +37,8 @@ import {
   CommandGroup,
   CommandInput,
   CommandItem,
-} from "../ui/command";
-import { Skeleton } from "../ui/skeleton";
+} from "../../ui/command";
+import { Skeleton } from "../../ui/skeleton";
 import { MemberSearchForm } from "./memberSearchForm";
 
 type Props = {
@@ -55,15 +55,13 @@ const memberObject = z.object({
   kill: z.boolean(),
   negative: z.boolean(),
   sequence: z.number(),
-})
-
-
+});
 
 export const GameResultFormSchema = z.object({
   member_0: memberObject,
   member_1: memberObject,
   member_2: memberObject,
-  member_3: memberObject
+  member_3: memberObject,
 });
 
 export const AddGameResultForm: FC<Props> = ({
@@ -78,11 +76,10 @@ export const AddGameResultForm: FC<Props> = ({
     kill: false,
     negative: false,
     sequence: sequence,
-  }
+  };
   const form = useForm<z.infer<typeof GameResultFormSchema>>({
     resolver: zodResolver(GameResultFormSchema),
-    defaultValues: {
-    },
+    defaultValues: {},
   });
 
   function onSubmit(values: z.infer<typeof GameResultFormSchema>) {

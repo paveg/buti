@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { FC } from "react";
-import { cn } from "~/components/lib/utils";
-import { Button } from "~/components/ui/button";
+import { cn } from "~/lib/utils";
+import { Button } from "~/ui/button";
 
 export const Navigation: FC = ({ ...props }) => {
   const router = useRouter();

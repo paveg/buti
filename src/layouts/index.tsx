@@ -1,7 +1,7 @@
 import Head from "next/head";
 import { FC } from "react";
-import { Navigation } from "~/components/navigation";
-import { Toaster } from "~/components/ui/toaster";
+import { Navigation } from "~/layouts/navigation";
+import { Toaster } from "~/ui/toaster";
 
 type Props = {
   children: React.ReactNode;

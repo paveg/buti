@@ -1,4 +1,8 @@
 import { z } from "zod";
+import {
+  CreateGameForm,
+  CreateGameFormSchema,
+} from "~/components/forms/createGameForm";
 import { GameFormSchema } from "~/components/forms/gameForm";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
@@ -76,4 +80,11 @@ export const gameRouter = createTRPCRouter({
       data: input,
     });
   }),
+  create: publicProcedure
+    .input(CreateGameFormSchema)
+    .mutation(({ ctx, input }) => {
+      return ctx.db.game.create({
+        data: input,
+      });
+    }),
 });

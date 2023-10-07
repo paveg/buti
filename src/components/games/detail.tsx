@@ -3,6 +3,8 @@ import { FC } from "react";
 import { Member } from "@prisma/client";
 import { api } from "~/utils/api";
 import { GroupBy, UniqueModels } from "~/utils/model";
+import { GameResultCreateDialog } from "../gameResults/addDialog";
+import { Button } from "../ui/button";
 import {
   Table,
   TableBody,
@@ -17,6 +19,7 @@ type Props = {
 };
 export const GameDetail: FC<Props> = (props) => {
   const { id } = props;
+
   const { data: game, isLoading } = api.game.getById.useQuery({ id: id });
   if (isLoading) {
     return <>Loading...</>;
@@ -26,10 +29,14 @@ export const GameDetail: FC<Props> = (props) => {
         return result.member;
       }),
     );
+    const limitByLine = game?.headCount;
     const gameBySequence = GroupBy(game?.results, (result) => result.sequence);
 
     return (
       <>
+        <div className="text-right">
+          <GameResultCreateDialog game={game} />
+        </div>
         {!isLoading && (
           <>
             <h1 className="text-2xl text-center">{game?.name}</h1>
@@ -40,7 +47,7 @@ export const GameDetail: FC<Props> = (props) => {
                   {members.map((member) => {
                     return <TableHead>{member.name}</TableHead>;
                   })}
-                  <TableHead>備考</TableHead>
+                  <TableHead className="text-right">備考</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>

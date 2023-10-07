@@ -5,6 +5,7 @@ import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { GameCreateDialog } from "~/components/games/createDialog";
 import { GameEditDialog } from "~/components/games/editDialog";
 import { Layout } from "~/components/layout";
 import { AspectRatio } from "~/components/ui/aspect-ratio";
@@ -116,6 +117,7 @@ export default function Home() {
   return (
     <Layout>
       <h1 className="my-4 text-2xl text-center">{year}年の戦績</h1>
+      <GameCreateDialog />
       {!isLoading &&
         games.map((game) => {
           const uniqMembers = UniqueModels<Member>(
@@ -147,7 +149,7 @@ export default function Home() {
               </TableCaption>
               <TableHeader className="font-bold">
                 <TableRow>
-                  <TableHead className="w-[100px] text-center">
+                  <TableHead className="w-[100px] text-left">
                     <GameEditDialog gameId={game.id} />
                   </TableHead>
                   {uniqMembers.map((member) => {
@@ -166,7 +168,7 @@ export default function Home() {
               </TableHeader>
               <TableBody>
                 <TableRow>
-                  <TableCell className="w-[100px]">素点</TableCell>
+                  <TableCell className="text-left w-[100px]">素点</TableCell>
                   {uniqMembers.map((member) => {
                     return (
                       <TableCell
@@ -180,7 +182,9 @@ export default function Home() {
                 </TableRow>
                 {tipExist() && (
                   <TableRow>
-                    <TableCell className="w-[100px]">チップ数</TableCell>
+                    <TableCell className="text-left w-[100px]">
+                      チップ数
+                    </TableCell>
                     {uniqMembers.map((member) => {
                       return (
                         <TableCell
@@ -194,7 +198,9 @@ export default function Home() {
                   </TableRow>
                 )}
                 <TableRow>
-                  <TableCell className="w-[100px]">合計点数</TableCell>
+                  <TableCell className="text-left w-[100px]">
+                    合計点数
+                  </TableCell>
                   {uniqMembers.map((member) => {
                     return (
                       <TableCell
@@ -213,7 +219,7 @@ export default function Home() {
                   })}
                 </TableRow>
                 <TableRow>
-                  <TableCell className="w-[100px]">1着数</TableCell>
+                  <TableCell className="text-left w-[100px]">1着数</TableCell>
                   {uniqMembers.map((member) => {
                     return (
                       <TableCell
@@ -226,7 +232,7 @@ export default function Home() {
                   })}
                 </TableRow>
                 <TableRow>
-                  <TableCell className="w-[100px]">2着数</TableCell>
+                  <TableCell className="text-left w-[100px]">2着数</TableCell>
                   {uniqMembers.map((member) => {
                     return (
                       <TableCell
@@ -239,7 +245,7 @@ export default function Home() {
                   })}
                 </TableRow>
                 <TableRow>
-                  <TableCell className="w-[100px]">3着数</TableCell>
+                  <TableCell className="text-left w-[100px]">3着数</TableCell>
                   {uniqMembers.map((member) => {
                     return (
                       <TableCell
@@ -252,7 +258,7 @@ export default function Home() {
                   })}
                 </TableRow>
                 <TableRow>
-                  <TableCell className="w-[100px]">4着数</TableCell>
+                  <TableCell className="text-left w-[100px]">4着数</TableCell>
                   {uniqMembers.map((member) => {
                     return (
                       <TableCell
@@ -265,7 +271,9 @@ export default function Home() {
                   })}
                 </TableRow>
                 <TableRow>
-                  <TableCell className="w-[100px]">平均着順</TableCell>
+                  <TableCell className="text-left w-[100px]">
+                    平均着順
+                  </TableCell>
                   {uniqMembers.map((member) => {
                     return (
                       <TableCell
@@ -294,7 +302,7 @@ export default function Home() {
                   })}
                 </TableRow>
                 <TableRow>
-                  <TableCell className="w-[100px]">連対率</TableCell>
+                  <TableCell className="text-left w-[100px]">連対率</TableCell>
                   {uniqMembers.map((member) => {
                     return (
                       <TableCell
@@ -322,7 +330,7 @@ export default function Home() {
                   })}
                 </TableRow>
                 <TableRow>
-                  <TableCell className="w-[100px]">ラス率</TableCell>
+                  <TableCell className="text-left w-[100px]">ラス率</TableCell>
                   {uniqMembers.map((member) => {
                     return (
                       <TableCell
@@ -344,7 +352,9 @@ export default function Home() {
                   })}
                 </TableRow>
                 <TableRow>
-                  <TableCell className="w-[100px]">トビ回数</TableCell>
+                  <TableCell className="text-left w-[100px]">
+                    トビ回数
+                  </TableCell>
                   {uniqMembers.map((member) => {
                     return (
                       <TableCell
@@ -357,7 +367,7 @@ export default function Home() {
                   })}
                 </TableRow>
                 <TableRow>
-                  <TableCell className="w-[100px]">トビ率</TableCell>
+                  <TableCell className="text-left w-[100px]">トビ率</TableCell>
                   {uniqMembers.map((member) => {
                     return (
                       <TableCell

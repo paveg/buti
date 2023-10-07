@@ -5,8 +5,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import { type ClassValue } from "clsx";
 import { format } from "date-fns";
 import { ja } from "date-fns/locale";
-import { FC } from "react";
-import { useForm } from "react-hook-form";
+import { FC, useState } from "react";
+import { useFieldArray, useForm } from "react-hook-form";
 import * as z from "zod";
 import { MemberCombobox } from "~/components/combobox/memberCombobox";
 import { ParlorCombobox } from "~/components/combobox/parlorCombobox";
@@ -35,6 +35,7 @@ import { RadioGroup, RadioGroupItem } from "~/ui/radio-group";
 import { Skeleton } from "~/ui/skeleton";
 import { toast } from "~/ui/use-toast";
 import { api } from "~/utils/api";
+import { CreateGameResultFormSchema } from "~/validations/gameResult";
 import { SearchMemberForm } from "./searchMemberForm";
 
 type Props = {
@@ -42,56 +43,158 @@ type Props = {
   game: Game;
   sequence: number;
 };
-
-const memberObject = z.object({
-  gameId: z.string(),
-  memberId: z.string(),
-  point: z.number(),
-  rank: z.number(),
-  kill: z.boolean(),
-  negative: z.boolean(),
-  sequence: z.number(),
-});
-
-export const GameResultFormSchema = z.object({
-  member_0: memberObject,
-  member_1: memberObject,
-  member_2: memberObject,
-  member_3: memberObject,
-});
-
 export const AddGameResultForm: FC<Props> = ({
   children,
   game,
   sequence,
 }: Props) => {
-  const defaultValue = {
-    gameId: game.id,
-    point: 25000,
-    rank: 0,
-    kill: false,
-    negative: false,
-    sequence: sequence,
-  };
-  const form = useForm<z.infer<typeof GameResultFormSchema>>({
-    resolver: zodResolver(GameResultFormSchema),
-    defaultValues: {},
+  const { data: members, isLoading } = api.member.getAll.useQuery();
+  // TODO: ここでゲームの人数分のフォームを作る
+  const schema = z.object({
+    gameResults: z.array(CreateGameResultFormSchema),
+  });
+  type ZGameResult = z.infer<typeof schema>["gameResults"][number];
+
+  const resultsInitial: ZGameResult[] = [...Array(game.headCount)].map(
+    (_, i) => {
+      return {
+        gameId: game.id,
+        memberId: "",
+        point: 0,
+        rank: i + 1,
+        kill: false,
+        negative: false,
+        sequence: sequence,
+      };
+    },
+  );
+  const [gameResults, setGameResults] = useState<GameResult[]>(
+    () => resultsInitial,
+  );
+  const form = useForm<ZGameResult[]>({
+    resolver: zodResolver(schema),
+    defaultValues: {
+      gameResults: resultsInitial,
+    },
+    mode: "onChange",
   });
 
-  function onSubmit(values: z.infer<typeof GameResultFormSchema>) {
-    return console.info(values);
+  const { fields } = useFieldArray({
+    name: "gameResults",
+    control: form.control,
+  });
+
+  function onSubmit(data: ZGameResult[]) {
+    console.info(JSON.stringify(data, null, 2));
   }
+  console.info(form.getValues());
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
-        <div className="space-y-4">
-          {/* {[...Array(game.headCount)].map((_, i) => {
-            return <MemberSearchForm key={`member-${i}`} form={form} number={i} />;
-          })} */}
-        </div>
-        <div className="my-4">{children}</div>
-      </form>
-    </Form>
+    <>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)}>
+          {fields.map((field, index) => {
+            return (
+              <div className="my-4 flex space-x-6 items-end ">
+                {isLoading ? (
+                  <Skeleton />
+                ) : (
+                  <FormField
+                    control={form.control}
+                    name={`gameResults.${index}.memberId` as const}
+                    render={({ field }) => (
+                      <FormItem className="flex flex-col">
+                        <FormLabel>{index + 1}位</FormLabel>
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <FormControl>
+                              <Button
+                                variant="outline"
+                                role="combobox"
+                                className={cn(
+                                  "w-[230px] justify-between",
+                                  !field.value && "text-muted-foreground",
+                                )}
+                              >
+                                {field.value
+                                  ? members.find(
+                                      (member) => member.id === field.value,
+                                    )?.name
+                                  : "メンバーを選択してください"}
+                                <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                              </Button>
+                            </FormControl>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-[200px] p-0">
+                            <Command>
+                              <CommandInput
+                                placeholder="メンバーを検索"
+                                className="h-9"
+                              />
+                              <CommandEmpty>
+                                メンバーが見つかりません
+                              </CommandEmpty>
+                              <CommandGroup>
+                                {members.map((member) => (
+                                  <CommandItem
+                                    value={member.id}
+                                    key={member.id}
+                                    onSelect={() => {
+                                      form.setValue(
+                                        `gameResults.${index}.memberId`,
+                                        member.id,
+                                      );
+                                    }}
+                                  >
+                                    {member.name}
+                                    <CheckIcon
+                                      className={cn(
+                                        "ml-auto h-4 w-4",
+                                        member.id === field.value
+                                          ? "opacity-100"
+                                          : "opacity-0",
+                                      )}
+                                    />
+                                  </CommandItem>
+                                ))}
+                              </CommandGroup>
+                            </Command>
+                          </PopoverContent>
+                        </Popover>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
+                <FormField
+                  name={`gameResults.${index}.point` as const}
+                  key={field.id}
+                  control={form.control}
+                  render={({ field }) => {
+                    return (
+                      <FormItem>
+                        <FormLabel>得点</FormLabel>
+                        <FormControl>
+                          <Input
+                            className="w-[200px]"
+                            placeholder="得点"
+                            {...field}
+                            onChange={(e) =>
+                              field.onChange(Number(e.target.value))
+                            }
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    );
+                  }}
+                />
+              </div>
+            );
+          })}
+          <div className="my-4">{children}</div>
+        </form>
+      </Form>
+    </>
   );
 };

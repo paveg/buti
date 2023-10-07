@@ -137,9 +137,13 @@ export default function Home() {
               className="min-w-full text-center text-sm font-light mt-4"
             >
               <TableCaption className="caption-top underline">
-                {formatISO(game.date, { representation: "date" })} {game.name}
-                （対局数: {rounds}）
-                {game.parlor.name}
+                <Button variant="link" asChild>
+                  <Link href={`/games/${game.id}`}>
+                    {formatISO(game.date, { representation: "date" })}{" "}
+                    {game.name} （対局数: {rounds}）
+                    {game.parlor.name}
+                  </Link>
+                </Button>
               </TableCaption>
               <TableHeader className="font-bold">
                 <TableRow>

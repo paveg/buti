@@ -29,6 +29,16 @@ export const gameRouter = createTRPCRouter({
         where: {
           id: input.id,
         },
+        include: {
+          results: {
+            include: {
+              member: true,
+            },
+            orderBy: {
+              sequence: "asc",
+            },
+          },
+        },
       });
     }),
   getByYear: publicProcedure

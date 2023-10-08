@@ -49,8 +49,9 @@ export const AddGameResultForm: FC<Props> = ({
   sequence,
 }: Props) => {
   const { data: members, isLoading } = api.member.getAll.useQuery();
-  // TODO: ここでゲームの人数分のフォームを作る
+  const { mutateAsync } = api.gameResult.createMany.useMutation();
   const schema = z.object({
+    sequence: z.number(),
     gameResults: z.array(CreateGameResultFormSchema),
   });
   type ZGameResult = z.infer<typeof schema>["gameResults"][number];
@@ -64,16 +65,16 @@ export const AddGameResultForm: FC<Props> = ({
         rank: i + 1,
         kill: false,
         negative: false,
-        sequence: sequence,
       };
     },
   );
   const [gameResults, setGameResults] = useState<GameResult[]>(
     () => resultsInitial,
   );
-  const form = useForm<ZGameResult[]>({
+  const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: {
+      sequence: 1,
       gameResults: resultsInitial,
     },
     mode: "onChange",
@@ -84,10 +85,20 @@ export const AddGameResultForm: FC<Props> = ({
     control: form.control,
   });
 
-  function onSubmit(data: ZGameResult[]) {
-    console.info(JSON.stringify(data, null, 2));
+  function onSubmit(data: z.infer<typeof schema>) {
+    console.info('data: ',data)
+    const score = data.gameResults.reduce((acc, result) => {
+      return acc + result.point
+    }, 0)
+    console.info(score)
+    return mutateAsync(data, {
+      onError: (error) => {
+        toast({
+          title: error.message
+        })
+      }
+    })
   }
-  console.info(form.getValues());
 
   return (
     <>

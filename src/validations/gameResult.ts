@@ -7,5 +7,10 @@ export const CreateGameResultFormSchema = z.object({
   rank: z.number().min(1).max(4),
   kill: z.boolean(),
   negative: z.boolean(),
+  // sequence: z.number().min(0).max(1000),
+});
+
+export const CreateGameResultFormSchemas = z.object({
   sequence: z.number().min(0).max(1000),
+  gameResults: z.array(CreateGameResultFormSchema)
 });

@@ -44,6 +44,16 @@ export const gameRouter = createTRPCRouter({
     });
   }),
   getByYear: publicProcedure.input(OnlyYearObject).query(({ ctx, input }) => {
+    let conditions = {}
+    if (input.year) {
+      conditions = {
+        date: {
+          gte: new Date(`${input.year}-01-01`),
+          lt: new Date(`${input.year}-12-31`),
+
+        }
+      }
+    }
     return ctx.db.game.findMany({
       include: {
         rule: true,
@@ -60,12 +70,7 @@ export const gameRouter = createTRPCRouter({
           },
         },
       },
-      where: {
-        date: {
-          gte: new Date(`${input.year}-01-01`),
-          lt: new Date(`${input.year}-12-31`),
-        },
-      },
+      where: conditions,
     });
   }),
   update: publicProcedure

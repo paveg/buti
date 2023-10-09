@@ -1,6 +1,6 @@
 import { type FC } from "react";
 
-import { type Game } from "@prisma/client";
+import { type GameResult, type Game, type Member } from "@prisma/client";
 import { CreateGameResultDialog } from "~/components/dialog/createGameResultDialog";
 import {
   Table,
@@ -16,17 +16,18 @@ import { GroupBy, UniqueModels } from "~/utils/model";
 type Props = {
   id: string;
 };
+
+type ResultWithMember = GameResult & { member: Member };
+type GameWithResults = Game & { results: ResultWithMember[] };
 export const GameDetailContainer: FC<Props> = ({ id }: Props) => {
   const { data: game, isLoading } = api.game.getById.useQuery({ id: id });
   if (isLoading) {
     return <>Loading...</>;
   } else {
-    const preMembers = game?.results.map((result) => {
+    const members = UniqueModels((game as GameWithResults)?.results.map((result) => {
       return result.member;
-    })
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const members = UniqueModels(preMembers!);
-    const gameBySequence = GroupBy(game?.results, (result) => result.sequence);
+    }));
+    const gameBySequence = GroupBy((game as GameWithResults)?.results, (result) => result.sequence);
 
     return (
       <>

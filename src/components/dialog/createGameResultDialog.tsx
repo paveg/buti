@@ -1,11 +1,10 @@
-import { Game } from "@prisma/client";
-import { FC } from "react";
+import { type Game } from "@prisma/client";
+import { type FC } from "react";
 import { AddGameResultForm } from "~/components/form/addGameResultForm";
 import { Button } from "~/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,

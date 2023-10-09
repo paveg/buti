@@ -1,13 +1,13 @@
 import * as z from "zod";
 import { OnlyIdObject } from "./common";
 
-export const OnlyYearObject = z.object({ year: z.number() });
+export const OnlyYearObject = z.object({ year: z.number().optional() });
 export const CreateGameFormSchema = z.object({
   name: z
     .string()
     .nonempty({ message: "ゲーム名を入力してください" })
     .max(80, { message: "ゲーム名は80文字以内で入力してください" }),
-  date: z.date({ message: "日付を入力してください" }),
+  date: z.date(),
   parlorId: z.string().nonempty({ message: "雀荘を選択してください" }),
   ruleId: z.string().nonempty({ message: "ルールを選択してください" }),
   headCount: z.number().min(3).max(4),

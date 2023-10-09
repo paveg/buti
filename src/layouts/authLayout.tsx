@@ -1,7 +1,12 @@
 import Image from "next/image";
-import { AspectRatio } from "~/components/ui/aspect-ratio";
+import { type FC } from "react";
+import { AspectRatio } from "~/ui/aspect-ratio";
 
-export function AuthLayout({ children }: { children: React.ReactNode }) {
+type Props =  {
+  children: React.ReactNode;
+};
+
+export const AuthLayout: FC<Props> = ({ children }: Props) => {
   return (
     <div className="grid min-h-screen grid-cols-1 overflow-hidden md:grid-cols-3 lg:grid-cols-2">
       <AspectRatio ratio={16 / 9}>

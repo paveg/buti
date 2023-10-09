@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { FC } from "react";
+import { type FC } from "react";
 import { useForm } from "react-hook-form";
-import * as z from "zod";
+import type * as z from "zod";
 import {
   RateStrings,
   Round,
@@ -19,14 +19,11 @@ import {
   FormLabel,
   FormMessage,
 } from "~/ui/form";
-import { Input } from "~/ui/input";
-import { Label } from "~/ui/label";
 import { RadioGroup, RadioGroupItem } from "~/ui/radio-group";
 import {
   Select,
   SelectContent,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "~/ui/select";
@@ -66,7 +63,7 @@ export const CreateRuleForm: FC = () => {
     }
     return mutateAsync(values, {
       onSettled: () => {
-        refetch();
+        void refetch();
       },
       onSuccess: () => {
         toast({
@@ -90,15 +87,15 @@ export const CreateRuleForm: FC = () => {
                   <FormControl>
                     <RadioGroup
                       name="round"
-                      onValueChange={(value) => field.onChange(value as Round)}
-                      defaultValue={field.value}
+                      onValueChange={(value) => field.onChange(Number(value))}
+                      defaultValue={String(field.value)}
                       className="flex flex-col space-y-1"
                     >
                       <FormItem className="flex items-center space-x-3 space-y-0">
                         <FormControl>
                           <RadioGroupItem
-                            checked={Number(field.value) === Round.QUATERROUND}
-                            value={Round.QUATERROUND}
+                            checked={field.value === Round.QUATERROUND}
+                            value={String(Round.QUATERROUND)}
                           />
                         </FormControl>
                         <FormLabel>{RoundStrings(Round.QUATERROUND)}</FormLabel>
@@ -106,8 +103,8 @@ export const CreateRuleForm: FC = () => {
                       <FormItem className="flex items-center space-x-3 space-y-0">
                         <FormControl>
                           <RadioGroupItem
-                            checked={Number(field.value) === Round.HALFROUND}
-                            value={Round.HALFROUND}
+                            checked={field.value === Round.HALFROUND}
+                            value={String(Round.HALFROUND)}
                           />
                         </FormControl>
                         <FormLabel>{RoundStrings(Round.HALFROUND)}</FormLabel>
@@ -127,16 +124,15 @@ export const CreateRuleForm: FC = () => {
                   <FormControl>
                     <RadioGroup
                       name="uma"
-                      onValueChange={(value) => field.onChange(value as Uma)}
-                      defaultValue={field.value}
+                      onValueChange={(value) => field.onChange(String(value))}
+                      defaultValue={String(field.value)}
                       className="flex flex-col space-y-1"
                     >
                       <FormItem className="flex items-center space-x-3 space-y-0">
                         <FormControl>
                           <RadioGroupItem
-                            name="uma"
-                            checked={Number(field.value) === Uma.FIVETEN}
-                            value={Uma.FIVETEN}
+                            checked={field.value === Uma.FIVETEN}
+                            value={String(Uma.FIVETEN)}
                           />
                         </FormControl>
                         <FormLabel>{UmaStrings(Uma.FIVETEN)}</FormLabel>
@@ -144,9 +140,8 @@ export const CreateRuleForm: FC = () => {
                       <FormItem className="flex items-center space-x-3 space-y-0">
                         <FormControl>
                           <RadioGroupItem
-                            name="uma"
-                            checked={Number(field.value) === Uma.ONETWO}
-                            value={Uma.ONETWO}
+                            checked={field.value === Uma.ONETWO}
+                            value={String(Uma.ONETWO)}
                           />
                         </FormControl>
                         <FormLabel>{UmaStrings(Uma.ONETWO)}</FormLabel>
@@ -154,9 +149,8 @@ export const CreateRuleForm: FC = () => {
                       <FormItem className="flex items-center space-x-3 space-y-0">
                         <FormControl>
                           <RadioGroupItem
-                            name="uma"
-                            checked={Number(field.value) === Uma.ONETHREE}
-                            value={Uma.ONETHREE}
+                            checked={field.value === Uma.ONETHREE}
+                            value={String(Uma.ONETHREE)}
                           />
                         </FormControl>
                         <FormLabel>{UmaStrings(Uma.ONETHREE)}</FormLabel>
@@ -164,9 +158,8 @@ export const CreateRuleForm: FC = () => {
                       <FormItem className="flex items-center space-x-3 space-y-0">
                         <FormControl>
                           <RadioGroupItem
-                            name="uma"
-                            checked={Number(field.value) === Uma.TWOTHREE}
-                            value={Uma.TWOTHREE}
+                            checked={field.value === Uma.TWOTHREE}
+                            value={String(Uma.TWOTHREE)}
                           />
                         </FormControl>
                         <FormLabel>{UmaStrings(Uma.TWOTHREE)}</FormLabel>
@@ -184,9 +177,9 @@ export const CreateRuleForm: FC = () => {
                 <FormItem>
                   <FormLabel>レート</FormLabel>
                   <Select
-                    value={field.value}
+                    value={String(field.value)}
                     onValueChange={(value) => field.onChange(Number(value))}
-                    defaultValue={field.value}
+                    defaultValue={String(field.value)}
                   >
                     <FormControl>
                       <SelectTrigger className="w-[180px]">
@@ -197,7 +190,7 @@ export const CreateRuleForm: FC = () => {
                       {[0, 10, 20, 30, 50, 100].map((rate) => {
                         return (
                           <SelectItem
-                            value={rate}
+                            value={String(rate)}
                             key={`select-item-rate-${rate}`}
                           >
                             {RateStrings(rate)}
@@ -218,9 +211,9 @@ export const CreateRuleForm: FC = () => {
                 <FormItem>
                   <FormLabel>チップ</FormLabel>
                   <Select
-                    value={field.value}
+                    value={String(field.value)}
                     onValueChange={(value) => field.onChange(Number(value))}
-                    defaultValue={field.value}
+                    defaultValue={String(field.value)}
                   >
                     <FormControl>
                       <SelectTrigger className="w-[180px]">
@@ -228,10 +221,10 @@ export const CreateRuleForm: FC = () => {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value={0}>0</SelectItem>
-                      <SelectItem value={500}>500</SelectItem>
-                      <SelectItem value={1000}>1000</SelectItem>
-                      <SelectItem value={2000}>2000</SelectItem>
+                      <SelectItem value={'0'}>0</SelectItem>
+                      <SelectItem value={'500'}>500</SelectItem>
+                      <SelectItem value={'1000'}>1000</SelectItem>
+                      <SelectItem value={'2000'}>2000</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormDescription />

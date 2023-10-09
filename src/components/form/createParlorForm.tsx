@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Parlor } from "@prisma/client";
+import { type FC } from "react";
 import { useForm } from "react-hook-form";
-import * as z from "zod";
+import type * as z from "zod";
 import { Button } from "~/ui/button";
 import {
   Form,
@@ -31,7 +31,7 @@ export const CreateParlorForm: FC = () => {
   });
 
   function onSubmit(values: z.infer<typeof ParlorFormSchema>) {
-    if (parlors.map((parlor) => parlor.name).includes(values.name)) {
+    if (parlors?.map((parlor) => parlor.name).includes(values.name)) {
       toast({
         title: "同じ名前の雀荘が既に存在します",
         variant: "destructive",
@@ -41,7 +41,7 @@ export const CreateParlorForm: FC = () => {
 
     return mutateAsync(values, {
       onSettled: () => {
-        refetch();
+        void refetch();
       },
       onSuccess: () => {
         toast({

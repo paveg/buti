@@ -1,18 +1,10 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Game } from "@prisma/client";
-import { CalendarIcon, CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
-import { useQueryClient } from "@tanstack/react-query";
-import { type ClassValue } from "clsx";
-import { format } from "date-fns";
-import { ja } from "date-fns/locale";
-import { FC, useState } from "react";
+import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
+import { type FC } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import * as z from "zod";
-import { MemberCombobox } from "~/components/combobox/memberCombobox";
-import { ParlorCombobox } from "~/components/combobox/parlorCombobox";
 import { cn } from "~/lib/utils";
 import { Button } from "~/ui/button";
-import { Calendar } from "~/ui/calendar";
 import {
   Command,
   CommandEmpty,
@@ -23,7 +15,6 @@ import {
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -31,12 +22,10 @@ import {
 } from "~/ui/form";
 import { Input } from "~/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "~/ui/popover";
-import { RadioGroup, RadioGroupItem } from "~/ui/radio-group";
 import { Skeleton } from "~/ui/skeleton";
 import { toast } from "~/ui/use-toast";
 import { api } from "~/utils/api";
 import { CreateGameResultFormSchema } from "~/validations/gameResult";
-import { SearchMemberForm } from "./searchMemberForm";
 
 type Props = {
   children?: React.ReactNode;
@@ -46,7 +35,6 @@ type Props = {
 export const AddGameResultForm: FC<Props> = ({
   children,
   game,
-  sequence,
 }: Props) => {
   const { data: members, isLoading } = api.member.getAll.useQuery();
   const { mutateAsync } = api.gameResult.createMany.useMutation();
@@ -56,6 +44,7 @@ export const AddGameResultForm: FC<Props> = ({
   });
   type ZGameResult = z.infer<typeof schema>["gameResults"][number];
 
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const resultsInitial: ZGameResult[] = [...Array(game.headCount)].map(
     (_, i) => {
       return {
@@ -67,9 +56,6 @@ export const AddGameResultForm: FC<Props> = ({
         negative: false,
       };
     },
-  );
-  const [gameResults, setGameResults] = useState<GameResult[]>(
-    () => resultsInitial,
   );
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
@@ -86,7 +72,7 @@ export const AddGameResultForm: FC<Props> = ({
   });
 
   function onSubmit(data: z.infer<typeof schema>) {
-    console.info('data: ',data)
+    console.info('data: ', data)
     const score = data.gameResults.reduce((acc, result) => {
       return acc + result.point
     }, 0)
@@ -106,7 +92,7 @@ export const AddGameResultForm: FC<Props> = ({
         <form onSubmit={form.handleSubmit(onSubmit)}>
           {fields.map((field, index) => {
             return (
-              <div className="my-4 flex space-x-6 items-end ">
+              <div key={field.id} className="my-4 flex space-x-6 items-end">
                 {isLoading ? (
                   <Skeleton />
                 ) : (

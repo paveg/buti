@@ -1,16 +1,12 @@
-import { type Session } from "next-auth";
+import { type Session } from 'next-auth';
 import { SessionProvider } from "next-auth/react";
-import type AppType from "next/app";
+import { type AppProps } from "next/app";
 import Head from "next/head";
-import { Layout } from "~/layouts";
 import "~/styles/globals.css";
 
 import { api } from "~/utils/api";
 
-const MyApp: AppType<{ session: Session | null }> = ({
-  Component,
-  pageProps: { session, ...pageProps },
-}) => {
+function MyApp({ Component, pageProps }: AppProps<{session: Session}>) {
   return (
     <>
       <Head>
@@ -24,11 +20,11 @@ const MyApp: AppType<{ session: Session | null }> = ({
           content="Buti - Recording score of the Mahjong"
         />
       </Head>
-      <SessionProvider session={session}>
+      <SessionProvider session={pageProps.session}>
         <Component {...pageProps} />
       </SessionProvider>
     </>
   );
-};
+}
 
 export default api.withTRPC(MyApp);

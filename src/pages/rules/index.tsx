@@ -1,5 +1,3 @@
-import { Rule } from "@prisma/client";
-import { useState } from "react";
 import { CreateRuleForm } from "~/components/form/createRuleForm";
 import { Layout } from "~/layouts";
 import { RateStrings, RoundStrings, UmaStrings } from "~/models/rule";
@@ -16,7 +14,7 @@ import {
 import { toast } from "~/ui/use-toast";
 import { api } from "~/utils/api";
 
-export default function () {
+export default function  RuleIndex () {
   const { data: rules, isLoading, refetch } = api.rule.getAll.useQuery();
   const { mutateAsync } = api.rule.deleteById.useMutation();
 
@@ -69,7 +67,7 @@ export default function () {
                         variant="destructive"
                         disabled={rule.games.length > 0}
                         onClick={() => {
-                          mutateAsync(
+                          void mutateAsync(
                             { id: rule.id },
                             {
                               onSuccess: () => {
@@ -78,7 +76,7 @@ export default function () {
                                 });
                               },
                               onSettled: () => {
-                                refetch();
+                                void refetch();
                               },
                             },
                           );

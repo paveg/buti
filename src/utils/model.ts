@@ -1,7 +1,7 @@
-export function UniqueModels<T>(models: T[]): T[] {
+export function UniqueModels<T extends { id: string; }>(models: T[]): T[] {
   return Array.from(
     new Map(models.map((model: { id: string }) => [model.id, model])).values(),
-  );
+  ) as T[];
 }
 
 export const GroupBy = <K, V>(

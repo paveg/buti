@@ -1,6 +1,6 @@
-import { type Game } from "@prisma/client";
 import { type FC } from "react";
 import { AddGameResultForm } from "~/components/form/addGameResultForm";
+import { type GameWithResults } from "~/types/game";
 import { Button } from "~/ui/button";
 import {
   Dialog,
@@ -12,7 +12,7 @@ import {
 } from "~/ui/dialog";
 
 type Props = {
-  game: Game;
+  game: GameWithResults;
 };
 
 export const CreateGameResultDialog: FC<Props> = ({ game }: Props) => {

@@ -1,11 +1,12 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { type Game, type GameResult, type Member } from "@prisma/client";
+import { type Member } from "@prisma/client";
 import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
 import { useQueryClient } from "@tanstack/react-query";
 import { type FC } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import * as z from "zod";
 import { cn } from "~/lib/utils";
+import { type GameWithResults } from "~/types/game";
 import { Button } from "~/ui/button";
 import {
   Command,
@@ -31,7 +32,7 @@ import { CreateGameResultFormSchema } from "~/validations/gameResult";
 
 type Props = {
   children?: React.ReactNode;
-  game: Game & { results: GameResult[] };
+  game: GameWithResults;
 };
 export const AddGameResultForm: FC<Props> = ({ children, game }: Props) => {
   const seq = game.results.length / game.headCount;
@@ -45,11 +46,12 @@ export const AddGameResultForm: FC<Props> = ({ children, game }: Props) => {
   });
   type ZGameResult = z.infer<typeof schema>["gameResults"][number];
   const gameMemberIds = game.results.map((r) => r.memberId);
-  let gameMembers = [];
+  let gameMembers: Member[] = [];
   if (!isLoading) {
-    gameMembers = members?.filter((m) => gameMemberIds.includes(m.id));
+    gameMembers =
+      members?.filter((m) => gameMemberIds.includes(m.id)) ?? ([] as Member[]);
   }
-  const gms: Member[] = gameMembers.length > 0 ? gameMembers : members;
+  const gms: Member[] = gameMembers.length > 0 ? gameMembers : members ?? [];
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const resultsInitial: ZGameResult[] = [...Array(game.headCount)].map(

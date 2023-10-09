@@ -1,5 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { type Game, type GameResult, type Member } from "@prisma/client";
 import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
+import { useQueryClient } from "@tanstack/react-query";
 import { type FC } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import * as z from "zod";
@@ -29,13 +31,12 @@ import { CreateGameResultFormSchema } from "~/validations/gameResult";
 
 type Props = {
   children?: React.ReactNode;
-  game: Game;
-  sequence: number;
+  game: Game & { results: GameResult[] };
 };
-export const AddGameResultForm: FC<Props> = ({
-  children,
-  game,
-}: Props) => {
+export const AddGameResultForm: FC<Props> = ({ children, game }: Props) => {
+  const seq = game.results.length / game.headCount;
+  const queryKey = api.game.getById.getQueryKey({ id: game.id });
+  const queryClient = useQueryClient();
   const { data: members, isLoading } = api.member.getAll.useQuery();
   const { mutateAsync } = api.gameResult.createMany.useMutation();
   const schema = z.object({
@@ -43,6 +44,12 @@ export const AddGameResultForm: FC<Props> = ({
     gameResults: z.array(CreateGameResultFormSchema),
   });
   type ZGameResult = z.infer<typeof schema>["gameResults"][number];
+  const gameMemberIds = game.results.map((r) => r.memberId);
+  let gameMembers = [];
+  if (!isLoading) {
+    gameMembers = members?.filter((m) => gameMemberIds.includes(m.id));
+  }
+  const gms: Member[] = gameMembers.length > 0 ? gameMembers : members;
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const resultsInitial: ZGameResult[] = [...Array(game.headCount)].map(
@@ -54,13 +61,14 @@ export const AddGameResultForm: FC<Props> = ({
         rank: i + 1,
         kill: false,
         negative: false,
+        sequence: seq,
       };
-    },
+    }
   );
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: {
-      sequence: 1,
+      sequence: game.results.length / game.headCount,
       gameResults: resultsInitial,
     },
     mode: "onChange",
@@ -72,27 +80,27 @@ export const AddGameResultForm: FC<Props> = ({
   });
 
   function onSubmit(data: z.infer<typeof schema>) {
-    console.info('data: ', data)
-    const score = data.gameResults.reduce((acc, result) => {
-      return acc + result.point
-    }, 0)
-    console.info(score)
     return mutateAsync(data, {
       onError: (error) => {
         toast({
-          title: error.message
-        })
-      }
-    })
+          title: error.message,
+        });
+      },
+      onSuccess: () => {
+        void queryClient.invalidateQueries(queryKey);
+      },
+    });
   }
+  console.info(form.getValues());
 
   return (
     <>
+      <h2>{seq + 1}局</h2>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           {fields.map((field, index) => {
             return (
-              <div key={field.id} className="my-4 flex space-x-6 items-end">
+              <div key={field.id} className="my-4 flex items-end space-x-6">
                 {isLoading ? (
                   <Skeleton />
                 ) : (
@@ -110,12 +118,12 @@ export const AddGameResultForm: FC<Props> = ({
                                 role="combobox"
                                 className={cn(
                                   "w-[230px] justify-between",
-                                  !field.value && "text-muted-foreground",
+                                  !field.value && "text-muted-foreground"
                                 )}
                               >
                                 {field.value
-                                  ? members.find(
-                                      (member) => member.id === field.value,
+                                  ? gms.find(
+                                      (member) => member.id === field.value
                                     )?.name
                                   : "メンバーを選択してください"}
                                 <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -132,14 +140,14 @@ export const AddGameResultForm: FC<Props> = ({
                                 メンバーが見つかりません
                               </CommandEmpty>
                               <CommandGroup>
-                                {members.map((member) => (
+                                {gms.map((member) => (
                                   <CommandItem
                                     value={member.id}
                                     key={member.id}
                                     onSelect={() => {
                                       form.setValue(
                                         `gameResults.${index}.memberId`,
-                                        member.id,
+                                        member.id
                                       );
                                     }}
                                   >
@@ -149,7 +157,7 @@ export const AddGameResultForm: FC<Props> = ({
                                         "ml-auto h-4 w-4",
                                         member.id === field.value
                                           ? "opacity-100"
-                                          : "opacity-0",
+                                          : "opacity-0"
                                       )}
                                     />
                                   </CommandItem>
@@ -176,9 +184,10 @@ export const AddGameResultForm: FC<Props> = ({
                             className="w-[200px]"
                             placeholder="得点"
                             {...field}
-                            onChange={(e) =>
-                              field.onChange(Number(e.target.value))
-                            }
+                            onChange={(e) => {
+                              const val = Number(e.target.value);
+                              return field.onChange(isNaN(val) ? 0 : val);
+                            }}
                           />
                         </FormControl>
                         <FormMessage />

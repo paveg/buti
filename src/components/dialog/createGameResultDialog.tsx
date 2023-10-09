@@ -29,7 +29,7 @@ export const CreateGameResultDialog: FC<Props> = ({ game }: Props) => {
         <DialogHeader>
           <DialogTitle>対局を追加</DialogTitle>
         </DialogHeader>
-        <AddGameResultForm game={game} sequence={0}>
+        <AddGameResultForm game={game}>
           <DialogFooter>
             <Button type="submit">追加</Button>
           </DialogFooter>

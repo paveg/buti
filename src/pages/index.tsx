@@ -1,4 +1,11 @@
-import { type Game, type GameResult, type Member, type Rule, type TipResult } from "@prisma/client";
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+import {
+  type Game,
+  type GameResult,
+  type Member,
+  type Rule,
+  type TipResult,
+} from "@prisma/client";
 import { formatISO } from "date-fns";
 import Link from "next/link";
 import { useState } from "react";
@@ -46,7 +53,7 @@ type GameWithRule = Game & { rule: Rule };
 const calcScoreByGame = (
   game: GameWithRule,
   gameResults: GameResult[],
-  member: Member,
+  member: Member
 ): number => {
   return GroupBy(gameResults, (result) => result.sequence).reduce(
     (acc, [_, results]) => {
@@ -56,21 +63,21 @@ const calcScoreByGame = (
         .forEach((result) => {
           acc2 +=
             result.rank === 1
-              // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-              ? topScore(game.rule, results, member)
-              // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-              : calcScore(result, game.rule);
+              ? // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+                topScore(game.rule, results, member)
+              : // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+                calcScore(result, game.rule);
         });
       return acc2;
     },
-    0,
+    0
   );
 };
 
 const calcTipQuantity = (
   rule: Rule,
   tipResults: TipResult[],
-  member: Member,
+  member: Member
 ): number => {
   return (
     RoundDown(
@@ -78,7 +85,7 @@ const calcTipQuantity = (
         ((tipResults.find((result) => result.memberId === member.id)
           ?.quantity ?? 0) -
           DefaultQuantity),
-      1000,
+      1000
     ) / 1000
   );
 };
@@ -86,15 +93,15 @@ const calcTipQuantity = (
 const positionByRank = (
   gameResults: GameResult[],
   member: Member,
-  rank: number,
+  rank: number
 ) => {
   return GroupBy(gameResults, (result) => result.sequence).filter(
     ([_, results]) => {
       return results.some(
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        (result) => result.memberId === member.id && result.rank === rank,
+        (result) => result.memberId === member.id && result.rank === rank
       );
-    },
+    }
   ).length;
 };
 
@@ -102,9 +109,9 @@ const killedCount = (gameResults: GameResult[], member: Member) => {
   return GroupBy(gameResults, (result) => result.sequence).filter(
     ([_, results]) => {
       return results.some(
-        (result) => result.memberId === member.id && result.negative,
+        (result) => result.memberId === member.id && result.negative
       );
-    },
+    }
   ).length;
 };
 
@@ -116,14 +123,14 @@ export default function Home() {
 
   return (
     <Layout>
-      <h1 className="my-4 text-2xl text-center">{year}年の戦績</h1>
+      <h1 className="my-4 text-center text-2xl">{year}年の戦績</h1>
       <CreateGameDialog />
       {!isLoading &&
         games?.map((game) => {
           const uniqMembers = UniqueModels<Member>(
             game.results.map((result) => {
               return result.member;
-            }),
+            })
           );
           const tipExist = (): boolean =>
             game.rule.tip > 0 &&
@@ -136,14 +143,13 @@ export default function Home() {
           return (
             <Table
               key={game.id}
-              className="min-w-full text-center text-sm font-light mt-4"
+              className="mt-4 min-w-full text-center text-sm font-light"
             >
               <TableCaption className="caption-top underline">
                 <Button variant="link" asChild>
                   <Link href={`/games/${game.id}`}>
                     {formatISO(game.date, { representation: "date" })}{" "}
-                    {game.name} （対局数: {rounds}）
-                    {game.parlor.name}
+                    {game.name} （対局数: {rounds}）{game.parlor.name}
                   </Link>
                 </Button>
               </TableCaption>
@@ -168,7 +174,7 @@ export default function Home() {
               </TableHeader>
               <TableBody>
                 <TableRow>
-                  <TableCell className="text-left w-[100px]">素点</TableCell>
+                  <TableCell className="w-[100px] text-center">素点</TableCell>
                   {uniqMembers.map((member) => {
                     return (
                       <TableCell
@@ -182,7 +188,7 @@ export default function Home() {
                 </TableRow>
                 {tipExist() && (
                   <TableRow>
-                    <TableCell className="text-left w-[100px]">
+                    <TableCell className="w-[100px] text-center">
                       チップ数
                     </TableCell>
                     {uniqMembers.map((member) => {
@@ -198,7 +204,7 @@ export default function Home() {
                   </TableRow>
                 )}
                 <TableRow>
-                  <TableCell className="text-left w-[100px]">
+                  <TableCell className="w-[100px] text-center">
                     合計点数
                   </TableCell>
                   {uniqMembers.map((member) => {
@@ -211,7 +217,7 @@ export default function Home() {
                           ? calcTipQuantity(
                               game.rule,
                               game.tipResults,
-                              member,
+                              member
                             ) + calcScoreByGame(game, game.results, member)
                           : calcScoreByGame(game, game.results, member)}
                       </TableCell>
@@ -219,7 +225,7 @@ export default function Home() {
                   })}
                 </TableRow>
                 <TableRow>
-                  <TableCell className="text-left w-[100px]">1着数</TableCell>
+                  <TableCell className="w-[100px] text-center">1着数</TableCell>
                   {uniqMembers.map((member) => {
                     return (
                       <TableCell
@@ -232,7 +238,7 @@ export default function Home() {
                   })}
                 </TableRow>
                 <TableRow>
-                  <TableCell className="text-left w-[100px]">2着数</TableCell>
+                  <TableCell className="w-[100px] text-center">2着数</TableCell>
                   {uniqMembers.map((member) => {
                     return (
                       <TableCell
@@ -245,7 +251,7 @@ export default function Home() {
                   })}
                 </TableRow>
                 <TableRow>
-                  <TableCell className="text-left w-[100px]">3着数</TableCell>
+                  <TableCell className="w-[100px] text-center">3着数</TableCell>
                   {uniqMembers.map((member) => {
                     return (
                       <TableCell
@@ -258,7 +264,7 @@ export default function Home() {
                   })}
                 </TableRow>
                 <TableRow>
-                  <TableCell className="text-left w-[100px]">4着数</TableCell>
+                  <TableCell className="w-[100px] text-center">4着数</TableCell>
                   {uniqMembers.map((member) => {
                     return (
                       <TableCell
@@ -271,7 +277,7 @@ export default function Home() {
                   })}
                 </TableRow>
                 <TableRow>
-                  <TableCell className="text-left w-[100px]">
+                  <TableCell className="w-[100px] text-center">
                     平均着順
                   </TableCell>
                   {uniqMembers.map((member) => {
@@ -281,14 +287,13 @@ export default function Home() {
                         key={`${member.id}-rank-average`}
                       >
                         {(
-                          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                           [...Array(game.headCount)]
                             .map((_, index) => {
                               return (
                                 positionByRank(
                                   game.results,
                                   member,
-                                  index + 1,
+                                  index + 1
                                 ) *
                                 (index + 1)
                               );
@@ -303,7 +308,9 @@ export default function Home() {
                   })}
                 </TableRow>
                 <TableRow>
-                  <TableCell className="text-left w-[100px]">連対率</TableCell>
+                  <TableCell className="w-[100px] text-center">
+                    連対率
+                  </TableCell>
                   {uniqMembers.map((member) => {
                     return (
                       <TableCell
@@ -311,13 +318,12 @@ export default function Home() {
                         key={`${member.id}-plus-percentage`}
                       >
                         {(
-                          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                           ([...Array(2)]
                             .map((_, index) => {
                               return positionByRank(
                                 game.results,
                                 member,
-                                index + 1,
+                                index + 1
                               );
                             })
                             .reduce((acc, ranked) => {
@@ -332,7 +338,9 @@ export default function Home() {
                   })}
                 </TableRow>
                 <TableRow>
-                  <TableCell className="text-left w-[100px]">ラス率</TableCell>
+                  <TableCell className="w-[100px] text-center">
+                    ラス率
+                  </TableCell>
                   {uniqMembers.map((member) => {
                     return (
                       <TableCell
@@ -343,7 +351,7 @@ export default function Home() {
                           (positionByRank(
                             game.results,
                             member,
-                            game.headCount,
+                            game.headCount
                           ) /
                             rounds) *
                           100
@@ -354,7 +362,7 @@ export default function Home() {
                   })}
                 </TableRow>
                 <TableRow>
-                  <TableCell className="text-left w-[100px]">
+                  <TableCell className="w-[100px] text-center">
                     トビ回数
                   </TableCell>
                   {uniqMembers.map((member) => {
@@ -369,7 +377,9 @@ export default function Home() {
                   })}
                 </TableRow>
                 <TableRow>
-                  <TableCell className="text-left w-[100px]">トビ率</TableCell>
+                  <TableCell className="w-[100px] text-center">
+                    トビ率
+                  </TableCell>
                   {uniqMembers.map((member) => {
                     return (
                       <TableCell

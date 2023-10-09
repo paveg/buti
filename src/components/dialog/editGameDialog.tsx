@@ -25,8 +25,8 @@ export const EditGameDialog: FC<Props> = ({ gameId }: Props) => {
       ) : (
         <Dialog>
           <DialogTrigger asChild>
-            <Button variant="secondary" size="sm">
-              基本情報を編集
+            <Button className="w-[80px]" variant="secondary" size="icon">
+              概要を編集
             </Button>
           </DialogTrigger>
           <DialogContent>

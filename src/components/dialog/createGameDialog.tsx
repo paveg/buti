@@ -15,12 +15,12 @@ export const CreateGameDialog: FC = () => {
     <Dialog>
       <DialogTrigger asChild>
         <div className="flex">
-          <Button className="ml-auto" size="sm">
+          <Button className="ml-auto mr-4" size="sm">
             戦績を追加
           </Button>
         </div>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="w-5/6">
         <DialogHeader>
           <DialogTitle>戦績を作成</DialogTitle>
         </DialogHeader>

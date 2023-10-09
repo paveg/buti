@@ -18,7 +18,7 @@ export const ParlorTable: FC = () => {
   const { mutateAsync } = api.parlor.deleteById.useMutation();
 
   return (
-    <Table>
+    <Table className="table-auto">
       <TableHeader>
         <TableRow>
           <TableHead className="text-center">雀荘名</TableHead>
@@ -32,13 +32,13 @@ export const ParlorTable: FC = () => {
             [...Array(5)].map((_, i) => (
               <TableRow key={`parlor-${i}`}>
                 <TableCell>
-                  <Skeleton className="h-6s w-[250px]" />
+                  <Skeleton className="h-6 w-full md:h-8" />
                 </TableCell>
                 <TableCell>
-                  <Skeleton className="h-6 w-[250px]" />
+                  <Skeleton className="h-6 w-full md:h-8" />
                 </TableCell>
                 <TableCell>
-                  <Skeleton className="h-6 w-[120px]" />
+                  <Skeleton className="h-6 w-full md:h-8" />
                 </TableCell>
               </TableRow>
             ))

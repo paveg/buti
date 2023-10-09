@@ -44,7 +44,9 @@ export const CreateMemberForm: FC<Props> = ({ members }: Props) => {
     }
 
     return mutateAsync(values, {
-      onSettled: () => { void refetch() },
+      onSettled: () => {
+        void refetch();
+      },
       onSuccess: () => {
         toast({
           title: "メンバーを追加しました",
@@ -54,14 +56,14 @@ export const CreateMemberForm: FC<Props> = ({ members }: Props) => {
   }
 
   return (
-    <div className="w-[240px] my-12">
+    <div className="mx-auto my-8 w-2/3 md:mr-4 md:w-1/3">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <FormField
             control={form.control}
             name="name"
             render={({ field }) => (
-              <FormItem className="space-y-3">
+              <FormItem className="space-y-2">
                 <FormLabel>メンバー名</FormLabel>
                 <FormControl>
                   <Input placeholder="名前" {...field} />

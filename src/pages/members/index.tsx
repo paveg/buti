@@ -20,14 +20,16 @@ export default function MemberIndex() {
 
   return (
     <Layout>
-      <Table>
+      <Table className="table-auto">
         <TableHeader>
           <TableRow>
             <TableHead className="text-center">名前</TableHead>
             <TableHead className="text-center">対局数</TableHead>
             <TableHead className="text-center">平均順位</TableHead>
             <TableHead className="text-center">連対率</TableHead>
-            <TableHead className="hidden md:table-cell">ラス率</TableHead>
+            <TableHead className="hidden text-center md:table-cell">
+              ラス率
+            </TableHead>
             <TableHead />
             <TableHead />
           </TableRow>
@@ -84,8 +86,8 @@ export default function MemberIndex() {
                       ? "-"
                       : `${lastPlaceRate.toFixed(2)}%`}
                   </TableCell>
-                  <TableCell className="w-[50px]">
-                    <div className="flex space-x-4">
+                  <TableCell className="">
+                    <div className="flex space-x-2 md:space-x-4">
                       <Button size="icon" asChild>
                         <Link href={`/members/${member.id}`}>詳細</Link>
                       </Button>

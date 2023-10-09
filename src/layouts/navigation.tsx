@@ -9,9 +9,11 @@ export const Navigation: FC = ({ ...props }) => {
   return (
     <div className="flex-col md:flex">
       <div className="border-b">
-        <div className="container flex h-14 items-center px-4">
+        <div className="flex h-14 items-center px-2 md:container">
           <nav
-            className={cn("flex item-center space-x-4 lg:space-x-6 mx-6")}
+            className={cn(
+              "item-center mx-4 flex space-x-4 md:mx-8 lg:space-x-6"
+            )}
             {...props}
           >
             <Button

@@ -52,9 +52,9 @@ export const CreateParlorForm: FC = () => {
   }
 
   return (
-    <div className="w-[240px] my-12">
+    <div className="my-8 ml-auto mr-4 w-3/5 md:w-1/3">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <FormField
             control={form.control}
             name="name"

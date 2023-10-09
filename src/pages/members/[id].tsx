@@ -9,7 +9,7 @@ export default function MemberDetail () {
   return (
     <Layout>
       <div className="mx-auto m-4 container">
-        {id && <MemberDetailContainer id={id} />}
+        {id && <MemberDetailContainer id={id as string} />}
       </div>
     </Layout>
   );

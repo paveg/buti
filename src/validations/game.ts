@@ -1,7 +1,7 @@
 import * as z from "zod";
 import { OnlyIdObject } from "./common";
 
-export const OnlyYearObject = z.object({ year: z.number() });
+export const OnlyYearObject = z.object({ year: z.number().optional() });
 export const CreateGameFormSchema = z.object({
   name: z
     .string()

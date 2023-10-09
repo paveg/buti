@@ -38,7 +38,7 @@ type Props = {
 };
 
 export const CreateGameForm: FC<Props> = ({ children }: Props) => {
-  const queryKey = api.game.getByYear.getQueryKey();
+  const queryKey = api.game.getByYear.getQueryKey({});
   const { data: parlors, isLoading: isLoadingParlors } =
     api.parlor.getAll.useQuery();
   const { data: rules, isLoading: isLoadingRules } = api.rule.getAll.useQuery();
@@ -154,13 +154,13 @@ export const CreateGameForm: FC<Props> = ({ children }: Props) => {
                   >
                     <FormItem className="items-center space-y-0 space-x-2">
                       <FormControl>
-                        <RadioGroupItem value={3} />
+                        <RadioGroupItem value={'3'} />
                       </FormControl>
                       <FormLabel>三麻</FormLabel>
                     </FormItem>
                     <FormItem className="items-center space-y-0 space-x-2">
                       <FormControl>
-                        <RadioGroupItem value={4} />
+                        <RadioGroupItem value={'4'} />
                       </FormControl>
                       <FormLabel>四麻</FormLabel>
                     </FormItem>
@@ -191,7 +191,7 @@ export const CreateGameForm: FC<Props> = ({ children }: Props) => {
                           )}
                         >
                           {field.value
-                            ? parlors.find(
+                            ? parlors?.find(
                                 (parlor) => parlor.id === field.value,
                               )?.name
                             : "雀荘を選択してください"}
@@ -207,7 +207,7 @@ export const CreateGameForm: FC<Props> = ({ children }: Props) => {
                         />
                         <CommandEmpty>雀荘が見つかりません</CommandEmpty>
                         <CommandGroup>
-                          {parlors.map((parlor) => (
+                          {parlors?.map((parlor) => (
                             <CommandItem
                               value={parlor.id}
                               key={parlor.id}
@@ -277,7 +277,7 @@ export const CreateGameForm: FC<Props> = ({ children }: Props) => {
                           )}
                         >
                           {field.value
-                            ? rules.find((rule) => rule.id === field.value)?.id
+                            ? rules?.find((rule) => rule.id === field.value)?.id
                             : "ルールを選択してください"}
                           <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                         </Button>
@@ -291,7 +291,7 @@ export const CreateGameForm: FC<Props> = ({ children }: Props) => {
                         />
                         <CommandEmpty>ルールが見つかりません</CommandEmpty>
                         <CommandGroup>
-                          {rules.map((rule) => (
+                          {rules?.map((rule) => (
                             <CommandItem
                               value={rule.id}
                               key={rule.id}

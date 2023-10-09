@@ -9,7 +9,7 @@ export default function GameDetail () {
   return (
     <Layout>
       <div className="mx-auto m-4 container">
-        {id && <GameDetailContainer id={id} />}
+        {id && <GameDetailContainer id={id as string} />}
       </div>
     </Layout>
   );

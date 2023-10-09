@@ -42,7 +42,7 @@ export const ParlorTable: FC = () => {
                 </TableCell>
               </TableRow>
             ))
-          : parlors.map((parlor) => {
+          : parlors?.map((parlor) => {
               const matchCount = parlor.games.length;
               return (
                 <TableRow key={parlor.id}>

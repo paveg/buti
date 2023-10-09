@@ -57,7 +57,7 @@ export const EditGameForm: FC<Props> = ({ gameId, children }: Props) => {
     data: game,
     refetch,
   } = api.game.getById.useQuery({ id: gameId });
-  const queryKey = api.game.getByYear.getQueryKey();
+  const queryKey = api.game.getByYear.getQueryKey({});
   const { data: parlors, isLoading: isLoadingParlors } =
     api.parlor.getAll.useQuery();
   const { data: rules, isLoading: isLoadingRules } = api.rule.getAll.useQuery();
@@ -70,7 +70,7 @@ export const EditGameForm: FC<Props> = ({ gameId, children }: Props) => {
 
   function onSubmit(values: z.infer<typeof GameFormSchema>) {
     return mutateAsync(
-      { id: game.id, ...values },
+      values,
       {
         onSuccess: () => {
           toast({
@@ -170,13 +170,13 @@ export const EditGameForm: FC<Props> = ({ gameId, children }: Props) => {
                   >
                     <FormItem className="items-center space-y-0 space-x-2">
                       <FormControl>
-                        <RadioGroupItem value={3} />
+                        <RadioGroupItem value={'3'} />
                       </FormControl>
                       <FormLabel>三麻</FormLabel>
                     </FormItem>
                     <FormItem className="items-center space-y-0 space-x-2">
                       <FormControl>
-                        <RadioGroupItem value={4} />
+                        <RadioGroupItem value={'4'} />
                       </FormControl>
                       <FormLabel>四麻</FormLabel>
                     </FormItem>
@@ -293,7 +293,7 @@ export const EditGameForm: FC<Props> = ({ gameId, children }: Props) => {
                           )}
                         >
                           {field.value
-                            ? rules.find((rule) => rule.id === field.value)?.id
+                            ? rules?.find((rule) => rule.id === field.value)?.id
                             : "ルールを選択してください"}
                           <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                         </Button>
@@ -307,7 +307,7 @@ export const EditGameForm: FC<Props> = ({ gameId, children }: Props) => {
                         />
                         <CommandEmpty>ルールが見つかりません</CommandEmpty>
                         <CommandGroup>
-                          {rules.map((rule) => (
+                          {rules?.map((rule) => (
                             <CommandItem
                               value={rule.id}
                               key={rule.id}

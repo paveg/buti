@@ -22,6 +22,8 @@ export const UmaStrings = (uma: Uma) => {
       return "10-30";
     case Uma.TWOTHREE:
       return "20-30";
+    default:
+      throw new Error("Not found uma string");
   }
 };
 
@@ -31,6 +33,8 @@ export const RoundStrings = (round: Round) => {
       return "東風";
     case Round.HALFROUND:
       return "半荘";
+    default:
+      throw new Error("Not found round");
   }
 };
 
@@ -48,6 +52,8 @@ export const RateStrings = (rate: number) => {
       return "テンゴ";
     case 100:
       return "テンピン";
+    default:
+      throw new Error("Not found rate string");
   }
 };
 
@@ -61,6 +67,8 @@ export const RankPointFiveTen = (rank: number): number => {
       return -5000;
     case 4:
       return -10000;
+    default:
+      throw new Error("Not found rank");
   }
 };
 export const RankPointOneTwo = (rank: number): number => {
@@ -73,6 +81,9 @@ export const RankPointOneTwo = (rank: number): number => {
       return -10000;
     case 4:
       return -20000;
+    default:
+      throw new Error("Not found rank");
+
   }
 };
 export const RankPointOneThree = (rank: number): number => {
@@ -85,6 +96,8 @@ export const RankPointOneThree = (rank: number): number => {
       return -10000;
     case 4:
       return -30000;
+    default:
+      throw new Error("Not found rank");
   }
 };
 export const RankPointTwoThree = (rank: number): number => {
@@ -97,5 +110,7 @@ export const RankPointTwoThree = (rank: number): number => {
       return -20000;
     case 4:
       return -30000;
+    default:
+      throw new Error("Not found rank");
   }
 };

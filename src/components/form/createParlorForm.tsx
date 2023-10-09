@@ -31,7 +31,7 @@ export const CreateParlorForm: FC = () => {
   });
 
   function onSubmit(values: z.infer<typeof ParlorFormSchema>) {
-    if (parlors.map((parlor) => parlor.name).includes(values.name)) {
+    if (parlors?.map((parlor) => parlor.name).includes(values.name)) {
       toast({
         title: "同じ名前の雀荘が既に存在します",
         variant: "destructive",

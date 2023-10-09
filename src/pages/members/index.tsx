@@ -47,6 +47,8 @@ export default function MemberIndex () {
                     return acc + 3;
                   case 4:
                     return acc + 4;
+                  default:
+                    throw new Error("invalid rank")
                 }
               }, 0);
               const winRate = (
@@ -74,10 +76,10 @@ export default function MemberIndex () {
                 <TableRow key={member.id}>
                   <TableCell className="w-[120px]">{member.name}</TableCell>
                   <TableCell>{matchCount}</TableCell>
-                  <TableCell>{isNaN(avgRank) ? "-" : `${avgRank}位`}</TableCell>
-                  <TableCell>{isNaN(winRate) ? "-" : `${winRate}%`}</TableCell>
+                  <TableCell>{`${avgRank}位`}</TableCell>
+                  <TableCell>{`${winRate}%`}</TableCell>
                   <TableCell>
-                    {isNaN(lastPlaceRate) ? "-" : `${lastPlaceRate}%`}
+                    {`${lastPlaceRate}%`}
                   </TableCell>
                   <TableCell className="w-[160px]">
                     <div className="flex space-x-4">
@@ -112,7 +114,10 @@ export default function MemberIndex () {
             })}
         </TableBody>
       </Table>
-      <CreateMemberForm members={members} />
+      <CreateMemberForm members={
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        members!
+        } />
     </Layout>
   );
 }

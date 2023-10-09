@@ -31,7 +31,7 @@ export const EditGameDialog: FC<Props> = ({ gameId }: Props) => {
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>{game.name}を編集</DialogTitle>
+              <DialogTitle>{game?.name}を編集</DialogTitle>
             </DialogHeader>
             <EditGameForm gameId={gameId}>
               <DialogFooter>

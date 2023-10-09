@@ -1,6 +1,6 @@
 import { type FC } from "react";
 
-import { type Member } from "@prisma/client";
+import { type Game } from "@prisma/client";
 import { CreateGameResultDialog } from "~/components/dialog/createGameResultDialog";
 import {
   Table,
@@ -21,17 +21,17 @@ export const GameDetailContainer: FC<Props> = ({ id }: Props) => {
   if (isLoading) {
     return <>Loading...</>;
   } else {
-    const members = UniqueModels<Member>(
-      game.results.map((result) => {
-        return result.member;
-      }),
-    );
+    const preMembers = game?.results.map((result) => {
+      return result.member;
+    })
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const members = UniqueModels(preMembers!);
     const gameBySequence = GroupBy(game?.results, (result) => result.sequence);
 
     return (
       <>
         <div className="text-right">
-          <CreateGameResultDialog game={game} />
+          <CreateGameResultDialog game={game as Game} />
         </div>
         {!isLoading && (
           <>
@@ -48,9 +48,11 @@ export const GameDetailContainer: FC<Props> = ({ id }: Props) => {
               </TableHeader>
               <TableBody>
                 {gameBySequence.map(([sequence, results]) => {
+                  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                   const killer = results.find((result) => result.kill)?.member;
                   const deaths = results
                     .filter((result) => result.negative)
+                    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
                     .map((result) => result.member);
                   return (
                     <TableRow key={`game-${Number(sequence)}`}>

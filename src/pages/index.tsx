@@ -41,8 +41,10 @@ const topScore = (rule: Rule, results: GameResult[], member: Member) => {
     }, 0);
 };
 
+type GameWithRule = Game & { rule: Rule };
+
 const calcScoreByGame = (
-  game: Game,
+  game: GameWithRule,
   gameResults: GameResult[],
   member: Member,
 ): number => {
@@ -50,8 +52,7 @@ const calcScoreByGame = (
     (acc, [_, results]) => {
       let acc2: number = acc;
       results
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        .filter((result) => result.member.id === member.id)
+        .filter((result) => result.memberId === member.id)
         .forEach((result) => {
           acc2 +=
             result.rank === 1
@@ -91,7 +92,7 @@ const positionByRank = (
     ([_, results]) => {
       return results.some(
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        (result) => result.member.id === member.id && result.rank === rank,
+        (result) => result.memberId === member.id && result.rank === rank,
       );
     },
   ).length;
@@ -101,8 +102,7 @@ const killedCount = (gameResults: GameResult[], member: Member) => {
   return GroupBy(gameResults, (result) => result.sequence).filter(
     ([_, results]) => {
       return results.some(
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        (result) => result.member.id === member.id && result.negative,
+        (result) => result.memberId === member.id && result.negative,
       );
     },
   ).length;
@@ -112,7 +112,6 @@ export default function Home() {
   const [year, setYear] = useState<number>(new Date().getFullYear());
   const { data: games, isLoading } = api.game.getByYear.useQuery({
     year: year,
-    initialData: [],
   });
 
   return (
@@ -120,7 +119,7 @@ export default function Home() {
       <h1 className="my-4 text-2xl text-center">{year}年の戦績</h1>
       <CreateGameDialog />
       {!isLoading &&
-        games.map((game) => {
+        games?.map((game) => {
           const uniqMembers = UniqueModels<Member>(
             game.results.map((result) => {
               return result.member;

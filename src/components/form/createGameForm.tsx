@@ -272,7 +272,7 @@ export const CreateGameForm: FC<Props> = ({ children }: Props) => {
                           variant="outline"
                           role="combobox"
                           className={cn(
-                            "w-[280px] justify-between",
+                            "w-[250px] justify-between",
                             !field.value && "text-muted-foreground",
                           )}
                         >

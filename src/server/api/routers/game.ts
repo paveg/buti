@@ -17,11 +17,13 @@ export const gameRouter = createTRPCRouter({
           include: {
             member: true,
           },
-          orderBy: {
+          orderBy: [{
+            sequence: "asc",
+          }, {
             member: {
-              name: "asc",
+              name: "desc",
             },
-          },
+          }],
         },
       },
     });
@@ -36,9 +38,13 @@ export const gameRouter = createTRPCRouter({
           include: {
             member: true,
           },
-          orderBy: {
+          orderBy: [{
             sequence: "asc",
-          },
+          }, {
+            member: {
+              name: "desc",
+            },
+          }],
         },
       },
     });
@@ -62,11 +68,13 @@ export const gameRouter = createTRPCRouter({
           include: {
             member: true,
           },
-          orderBy: {
+          orderBy: [{
+            sequence: "asc",
+          }, {
             member: {
-              name: "asc",
+              name: "desc",
             },
-          },
+          }],
         },
       },
       where: conditions,

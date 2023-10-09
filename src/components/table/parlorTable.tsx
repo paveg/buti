@@ -21,15 +21,15 @@ export const ParlorTable: FC = () => {
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead>雀荘名</TableHead>
-          <TableHead>総対局回数</TableHead>
-          <TableHead>操作</TableHead>
+          <TableHead className="text-center">雀荘名</TableHead>
+          <TableHead className="text-center">総対局回数</TableHead>
+          <TableHead className="text-center">操作</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         {isLoading
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-          ? [...Array(5)].map((_, i) => (
+          ? // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+            [...Array(5)].map((_, i) => (
               <TableRow key={`parlor-${i}`}>
                 <TableCell>
                   <Skeleton className="h-6s w-[250px]" />
@@ -43,15 +43,25 @@ export const ParlorTable: FC = () => {
               </TableRow>
             ))
           : parlors?.map((parlor) => {
-              const matchCount = parlor.games.length;
+              const matchCount = parlor.games.reduce((acc, games) => {
+                const t = games.results.length / games.headCount;
+                return acc + t;
+              }, 0);
               return (
                 <TableRow key={parlor.id}>
-                  <TableCell key={`${parlor.id}-name`}>{parlor.name}</TableCell>
-                  <TableCell key={`${parlor.id}-game-count`}>
-                    {matchCount}
-                    局
+                  <TableCell className="text-center" key={`${parlor.id}-name`}>
+                    {parlor.name}
                   </TableCell>
-                  <TableCell key={`${parlor.id}-delete`}>
+                  <TableCell
+                    className="text-center"
+                    key={`${parlor.id}-game-count`}
+                  >
+                    {matchCount}局
+                  </TableCell>
+                  <TableCell
+                    className="text-center"
+                    key={`${parlor.id}-delete`}
+                  >
                     <Button
                       size="sm"
                       variant="destructive"
@@ -66,7 +76,7 @@ export const ParlorTable: FC = () => {
                               });
                               void refetch();
                             },
-                          },
+                          }
                         )
                       }
                     >

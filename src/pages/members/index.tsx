@@ -1,4 +1,3 @@
-
 import Link from "next/link";
 import { CreateMemberForm } from "~/components/form/createMemberForm";
 import { Layout } from "~/layouts";
@@ -15,7 +14,7 @@ import { toast } from "~/ui/use-toast";
 import { api } from "~/utils/api";
 
 // eslint-disable-next-line import/no-anonymous-default-export
-export default function MemberIndex () {
+export default function MemberIndex() {
   const { data: members, isLoading, refetch } = api.member.getAll.useQuery();
   const { mutateAsync } = api.member.deleteById.useMutation();
 
@@ -24,11 +23,11 @@ export default function MemberIndex () {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>名前</TableHead>
-            <TableHead>対局数</TableHead>
-            <TableHead>平均順位</TableHead>
-            <TableHead>連対率</TableHead>
-            <TableHead>ラス率</TableHead>
+            <TableHead className="text-center">名前</TableHead>
+            <TableHead className="text-center">対局数</TableHead>
+            <TableHead className="text-center">平均順位</TableHead>
+            <TableHead className="text-center">連対率</TableHead>
+            <TableHead className="hidden md:table-cell">ラス率</TableHead>
             <TableHead />
             <TableHead />
           </TableRow>
@@ -48,10 +47,10 @@ export default function MemberIndex () {
                   case 4:
                     return acc + 4;
                   default:
-                    throw new Error("invalid rank")
+                    throw new Error("invalid rank");
                 }
               }, 0);
-              const winRate = (
+              const winRate =
                 (member.results.reduce((acc, result) => {
                   if (result.rank === 1 || result.rank === 2) {
                     return acc + 1;
@@ -59,9 +58,8 @@ export default function MemberIndex () {
                   return acc;
                 }, 0) /
                   matchCount) *
-                100
-              );
-              const lastPlaceRate = (
+                100;
+              const lastPlaceRate =
                 (member.results.reduce((acc, result) => {
                   if (result.rank === 4) {
                     return acc + 1;
@@ -69,26 +67,31 @@ export default function MemberIndex () {
                   return acc;
                 }, 0) /
                   matchCount) *
-                100
-              )
-              const avgRank = (rankedCount / matchCount);
+                100;
+              const avgRank = rankedCount / matchCount;
               return (
                 <TableRow key={member.id}>
-                  <TableCell className="w-[120px]">{member.name}</TableCell>
-                  <TableCell>{matchCount}</TableCell>
-                  <TableCell>{isNaN(avgRank) ? '-' : `${avgRank.toFixed(2)}位`}</TableCell>
-                  <TableCell>{isNaN(winRate) ? '-' : `${winRate.toFixed(2)}%`}</TableCell>
-                  <TableCell>
-                    {isNaN(lastPlaceRate) ? '-' : `${lastPlaceRate.toFixed(2)}%`}
+                  <TableCell className="text-center">{member.name}</TableCell>
+                  <TableCell className="text-center">{matchCount}</TableCell>
+                  <TableCell className="text-center">
+                    {isNaN(avgRank) ? "-" : `${avgRank.toFixed(2)}位`}
                   </TableCell>
-                  <TableCell className="w-[160px]">
+                  <TableCell className="text-center">
+                    {isNaN(winRate) ? "-" : `${winRate.toFixed(2)}%`}
+                  </TableCell>
+                  <TableCell className="hidden md:table-cell">
+                    {isNaN(lastPlaceRate)
+                      ? "-"
+                      : `${lastPlaceRate.toFixed(2)}%`}
+                  </TableCell>
+                  <TableCell className="w-[50px]">
                     <div className="flex space-x-4">
-                      <Button size="sm" className="flex-1" asChild>
+                      <Button size="icon" asChild>
                         <Link href={`/members/${member.id}`}>詳細</Link>
                       </Button>
                       <Button
-                        className="flex-1"
-                        size="sm"
+                        className="flex"
+                        size="icon"
                         disabled={member.results.length > 0}
                         variant="destructive"
                         onClick={() => {
@@ -101,7 +104,7 @@ export default function MemberIndex () {
                                 });
                                 void refetch();
                               },
-                            },
+                            }
                           );
                         }}
                       >
@@ -114,10 +117,12 @@ export default function MemberIndex () {
             })}
         </TableBody>
       </Table>
-      <CreateMemberForm members={
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        members!
-        } />
+      <CreateMemberForm
+        members={
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          members!
+        }
+      />
     </Layout>
   );
 }

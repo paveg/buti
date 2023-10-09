@@ -24,10 +24,15 @@ export const GameDetailContainer: FC<Props> = ({ id }: Props) => {
   if (isLoading) {
     return <>Loading...</>;
   } else {
-    const members = UniqueModels((game as GameWithResults)?.results.map((result) => {
-      return result.member;
-    }));
-    const gameBySequence = GroupBy((game as GameWithResults)?.results, (result) => result.sequence);
+    const members = UniqueModels(
+      (game as GameWithResults)?.results.map((result) => {
+        return result.member;
+      })
+    );
+    const gameBySequence = GroupBy(
+      (game as GameWithResults)?.results,
+      (result) => result.sequence
+    );
 
     return (
       <>
@@ -36,36 +41,44 @@ export const GameDetailContainer: FC<Props> = ({ id }: Props) => {
         </div>
         {!isLoading && (
           <>
-            <h1 className="text-2xl text-center">{game?.name}</h1>
+            <h1 className="text-center text-2xl">{game?.name}</h1>
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead />
+                  <TableHead className="w-[150px]" />
                   {members.map((member) => {
-                    return <TableHead key={member.id}>{member.name}</TableHead>;
+                    return (
+                      <TableHead className="text-center" key={member.id}>
+                        {member.name}
+                      </TableHead>
+                    );
                   })}
-                  <TableHead className="text-right">備考</TableHead>
+                  <TableHead className="w-[100px] text-center">
+                    飛び賞
+                  </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {gameBySequence.map(([sequence, results]) => {
                   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                   const killer = results.find((result) => result.kill)?.member;
-                  const deaths = results
-                    .filter((result) => result.negative)
-                    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-                    .map((result) => result.member);
                   return (
                     <TableRow key={`game-${Number(sequence)}`}>
-                      <TableCell>第{Number(sequence) + 1}局</TableCell>
+                      <TableCell className="w-[150px] text-center">
+                        第{Number(sequence) + 1}局
+                      </TableCell>
                       {results.map((result) => {
-                        return <TableCell key={result.id}>{result.point}</TableCell>;
+                        return (
+                          <TableCell
+                            className="w-[100px] text-center"
+                            key={result.id}
+                          >
+                            {result.point}
+                          </TableCell>
+                        );
                       })}
-                      <TableCell className="w-[250px]">
-                        {killer &&
-                          `飛び賞: ${killer.name} -> ${deaths.map(
-                            (member) => member.name,
-                          ).join(",")}`}
+                      <TableCell className="w-[200px] text-center">
+                        {killer && killer.name}
                       </TableCell>
                     </TableRow>
                   );

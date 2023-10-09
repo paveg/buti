@@ -74,10 +74,10 @@ export const CreateRuleForm: FC = () => {
   }
 
   return (
-    <div className="mx-auto w-[1000px]">
+    <div className="my-8">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          <div className="flex space-x-8">
+          <div className="ml-4 md:ml-0 md:flex md:space-x-8">
             <FormField
               control={form.control}
               name="round"
@@ -221,10 +221,10 @@ export const CreateRuleForm: FC = () => {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value={'0'}>0</SelectItem>
-                      <SelectItem value={'500'}>500</SelectItem>
-                      <SelectItem value={'1000'}>1000</SelectItem>
-                      <SelectItem value={'2000'}>2000</SelectItem>
+                      <SelectItem value={"0"}>0</SelectItem>
+                      <SelectItem value={"500"}>500</SelectItem>
+                      <SelectItem value={"1000"}>1000</SelectItem>
+                      <SelectItem value={"2000"}>2000</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormDescription />
@@ -236,17 +236,17 @@ export const CreateRuleForm: FC = () => {
               control={form.control}
               name="killBonus"
               render={({ field }) => (
-                <FormItem className="flex flex-col items-center space-y-5">
+                <FormItem className="flex flex-col items-center">
                   <FormLabel>飛び賞</FormLabel>
-                  <FormDescription>
-                    自摸又は栄和で他家を0点未満にした際のボーナス
-                  </FormDescription>
                   <FormControl>
                     <Switch
                       checked={field.value}
                       onCheckedChange={field.onChange}
                     />
                   </FormControl>
+                  <FormDescription>
+                    自摸又は栄和で他家を0点未満にした際のボーナス
+                  </FormDescription>
                 </FormItem>
               )}
             />

@@ -85,15 +85,15 @@ export const CreateGameForm: FC<Props> = ({ children }: Props) => {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>ゲーム名</FormLabel>
-                <div className="space-x-4 flex items-center">
+                <div className="items-center md:flex md:space-x-4">
                   <FormControl>
                     <Input
                       placeholder="ゲーム名"
-                      className="w-[250px]"
+                      className="w-full md:w-3/5"
                       {...field}
                     />
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage className="my-2 md:my-1" />
                 </div>
               </FormItem>
             )}
@@ -110,8 +110,8 @@ export const CreateGameForm: FC<Props> = ({ children }: Props) => {
                       <Button
                         variant={"outline"}
                         className={cn(
-                          "w-[250px] pl-3 text-left font-normal",
-                          !field.value && "text-muted-foreground",
+                          "w-full pl-3 text-left font-normal md:w-3/5",
+                          !field.value && "text-muted-foreground"
                         )}
                       >
                         {field.value ? (
@@ -152,15 +152,15 @@ export const CreateGameForm: FC<Props> = ({ children }: Props) => {
                     defaultValue={String(field.value)}
                     className="flex items-baseline space-x-4"
                   >
-                    <FormItem className="items-center space-y-0 space-x-2">
+                    <FormItem className="items-center space-x-2 space-y-0">
                       <FormControl>
-                        <RadioGroupItem value={'3'} />
+                        <RadioGroupItem value={"3"} />
                       </FormControl>
                       <FormLabel>三麻</FormLabel>
                     </FormItem>
-                    <FormItem className="items-center space-y-0 space-x-2">
+                    <FormItem className="items-center space-x-2 space-y-0">
                       <FormControl>
-                        <RadioGroupItem value={'4'} />
+                        <RadioGroupItem value={"4"} />
                       </FormControl>
                       <FormLabel>四麻</FormLabel>
                     </FormItem>
@@ -171,7 +171,7 @@ export const CreateGameForm: FC<Props> = ({ children }: Props) => {
             )}
           />
           {isLoadingParlors ? (
-            <Skeleton />
+            <Skeleton className="h-8 w-full md:w-3/5" />
           ) : (
             <FormField
               control={form.control}
@@ -186,24 +186,24 @@ export const CreateGameForm: FC<Props> = ({ children }: Props) => {
                           variant="outline"
                           role="combobox"
                           className={cn(
-                            "w-[250px] justify-between",
-                            !field.value && "text-muted-foreground",
+                            "w-full justify-between md:w-3/5",
+                            !field.value && "text-muted-foreground"
                           )}
                         >
                           {field.value
                             ? parlors?.find(
-                                (parlor) => parlor.id === field.value,
+                                (parlor) => parlor.id === field.value
                               )?.name
                             : "雀荘を選択してください"}
                           <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                         </Button>
                       </FormControl>
                     </PopoverTrigger>
-                    <PopoverContent className="w-[250px] p-0">
+                    <PopoverContent className="w-full p-0 md:w-3/5">
                       <Command>
                         <CommandInput
                           placeholder="雀荘を検索"
-                          className="h-9"
+                          className="h-8"
                         />
                         <CommandEmpty>雀荘が見つかりません</CommandEmpty>
                         <CommandGroup>
@@ -221,7 +221,7 @@ export const CreateGameForm: FC<Props> = ({ children }: Props) => {
                                   "ml-auto h-4 w-4",
                                   parlor.id === field.value
                                     ? "opacity-100"
-                                    : "opacity-0",
+                                    : "opacity-0"
                                 )}
                               />
                             </CommandItem>
@@ -242,11 +242,11 @@ export const CreateGameForm: FC<Props> = ({ children }: Props) => {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>場代（円）</FormLabel>
-                <div className="space-x-4 flex items-center">
+                <div className="flex items-center space-x-4">
                   <FormControl>
                     <Input
                       placeholder="場代"
-                      className="w-[250px]"
+                      className="w-full md:w-3/5"
                       defaultValue={String(field.value ?? 0)}
                       onChange={(e) => field.onChange(Number(e.target.value))}
                     />
@@ -257,7 +257,7 @@ export const CreateGameForm: FC<Props> = ({ children }: Props) => {
             )}
           />
           {isLoadingRules ? (
-            <Skeleton />
+            <Skeleton className="h-8 w-full md:w-3/5" />
           ) : (
             <FormField
               control={form.control}
@@ -272,8 +272,8 @@ export const CreateGameForm: FC<Props> = ({ children }: Props) => {
                           variant="outline"
                           role="combobox"
                           className={cn(
-                            "w-[250px] justify-between",
-                            !field.value && "text-muted-foreground",
+                            "w-full justify-between md:w-3/5",
+                            !field.value && "text-muted-foreground"
                           )}
                         >
                           {field.value
@@ -305,7 +305,7 @@ export const CreateGameForm: FC<Props> = ({ children }: Props) => {
                                   "ml-auto h-4 w-4",
                                   rule.id === field.value
                                     ? "opacity-100"
-                                    : "opacity-0",
+                                    : "opacity-0"
                                 )}
                               />
                             </CommandItem>
@@ -321,7 +321,7 @@ export const CreateGameForm: FC<Props> = ({ children }: Props) => {
             />
           )}
         </div>
-        <div className="my-4">{children}</div>
+        <div className="my-2">{children}</div>
       </form>
     </Form>
   );

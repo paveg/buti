@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { type FC } from "react";
 import { AspectRatio } from "~/ui/aspect-ratio";
 
 type Props =  {

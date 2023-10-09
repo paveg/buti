@@ -1,8 +1,7 @@
-import { FC } from "react";
+import { type FC } from "react";
 
-import { Member } from "@prisma/client";
+import { type Member } from "@prisma/client";
 import { CreateGameResultDialog } from "~/components/dialog/createGameResultDialog";
-import { Button } from "~/ui/button";
 import {
   Table,
   TableBody,
@@ -27,7 +26,6 @@ export const GameDetailContainer: FC<Props> = ({ id }: Props) => {
         return result.member;
       }),
     );
-    const limitByLine = game?.headCount;
     const gameBySequence = GroupBy(game?.results, (result) => result.sequence);
 
     return (
@@ -43,7 +41,7 @@ export const GameDetailContainer: FC<Props> = ({ id }: Props) => {
                 <TableRow>
                   <TableHead />
                   {members.map((member) => {
-                    return <TableHead>{member.name}</TableHead>;
+                    return <TableHead key={member.id}>{member.name}</TableHead>;
                   })}
                   <TableHead className="text-right">備考</TableHead>
                 </TableRow>
@@ -55,16 +53,16 @@ export const GameDetailContainer: FC<Props> = ({ id }: Props) => {
                     .filter((result) => result.negative)
                     .map((result) => result.member);
                   return (
-                    <TableRow>
-                      <TableCell>第{sequence + 1}局</TableCell>
+                    <TableRow key={`game-${Number(sequence)}`}>
+                      <TableCell>第{Number(sequence) + 1}局</TableCell>
                       {results.map((result) => {
-                        return <TableCell>{result.point}</TableCell>;
+                        return <TableCell key={result.id}>{result.point}</TableCell>;
                       })}
                       <TableCell className="w-[250px]">
                         {killer &&
                           `飛び賞: ${killer.name} -> ${deaths.map(
                             (member) => member.name,
-                          )}`}
+                          ).join(",")}`}
                       </TableCell>
                     </TableRow>
                   );

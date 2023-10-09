@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { type FC } from "react";
 import { Button } from "~/ui/button";
 import { Skeleton } from "~/ui/skeleton";
 import {
@@ -28,6 +28,7 @@ export const ParlorTable: FC = () => {
       </TableHeader>
       <TableBody>
         {isLoading
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
           ? [...Array(5)].map((_, i) => (
               <TableRow key={`parlor-${i}`}>
                 <TableCell>
@@ -56,14 +57,14 @@ export const ParlorTable: FC = () => {
                       variant="destructive"
                       disabled={matchCount > 0}
                       onClick={() =>
-                        mutateAsync(
+                        void mutateAsync(
                           { id: parlor.id },
                           {
                             onSuccess: () => {
                               toast({
                                 title: "雀荘を削除しました",
                               });
-                              refetch();
+                              void refetch();
                             },
                           },
                         )

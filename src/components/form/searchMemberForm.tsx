@@ -2,7 +2,7 @@ import { Skeleton } from "~/ui/skeleton";
 
 import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
 import type { UseFormReturn } from "react-hook-form";
-import * as z from "zod";
+import type * as z from "zod";
 import { cn } from "~/lib/utils";
 import { Button } from "~/ui/button";
 import {
@@ -13,19 +13,15 @@ import {
   CommandItem,
 } from "~/ui/command";
 import {
-  Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "~/ui/form";
-import { Input } from "~/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "~/ui/popover";
-import { useToast } from "~/ui/use-toast";
 import { api } from "~/utils/api";
-import { GameResultFormSchema } from "./addGameResultForm";
+import { type GameResultFormSchema } from "./addGameResultForm";
 
 type Props = {
   form: UseFormReturn<z.infer<typeof GameResultFormSchema>>;

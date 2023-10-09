@@ -1,6 +1,5 @@
-import { member } from "@prisma/client";
+
 import Link from "next/link";
-import { useRouter } from "next/router";
 import { CreateMemberForm } from "~/components/form/createMemberForm";
 import { Layout } from "~/layouts";
 import { Button } from "~/ui/button";
@@ -8,7 +7,6 @@ import {
   Table,
   TableBody,
   TableCell,
-  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
@@ -16,8 +14,8 @@ import {
 import { toast } from "~/ui/use-toast";
 import { api } from "~/utils/api";
 
-export default function () {
-  const router = useRouter();
+// eslint-disable-next-line import/no-anonymous-default-export
+export default function MemberIndex () {
   const { data: members, isLoading, refetch } = api.member.getAll.useQuery();
   const { mutateAsync } = api.member.deleteById.useMutation();
 
@@ -92,14 +90,14 @@ export default function () {
                         disabled={member.results.length > 0}
                         variant="destructive"
                         onClick={() => {
-                          mutateAsync(
+                          void mutateAsync(
                             { id: member.id },
                             {
                               onSuccess: () => {
                                 toast({
                                   title: "メンバーを削除しました",
                                 });
-                                refetch();
+                                void refetch();
                               },
                             },
                           );

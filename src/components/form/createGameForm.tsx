@@ -1,15 +1,11 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Game } from "@prisma/client";
 import { CalendarIcon, CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
 import { useQueryClient } from "@tanstack/react-query";
-import { type ClassValue } from "clsx";
 import { format } from "date-fns";
 import { ja } from "date-fns/locale";
-import { FC } from "react";
+import { type FC } from "react";
 import { useForm } from "react-hook-form";
-import * as z from "zod";
-import { MemberCombobox } from "~/components/combobox/memberCombobox";
-import { ParlorCombobox } from "~/components/combobox/parlorCombobox";
+import type * as z from "zod";
 import { cn } from "~/lib/utils";
 import { Button } from "~/ui/button";
 import { Calendar } from "~/ui/calendar";
@@ -62,12 +58,12 @@ export const CreateGameForm: FC<Props> = ({ children }: Props) => {
 
   function onSubmit(values: z.infer<typeof CreateGameFormSchema>) {
     return mutateAsync(values, {
-      onSuccess: (res) => {
+      onSuccess: () => {
         toast({
           title: "ゲームを作成しました",
         });
 
-        queryClient.invalidateQueries(queryKey);
+        void queryClient.invalidateQueries(queryKey);
       },
       onError: (err) => {
         toast({
@@ -76,13 +72,12 @@ export const CreateGameForm: FC<Props> = ({ children }: Props) => {
           description: err.message,
         });
       },
-      onSettled: () => {},
     });
   }
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
+      <form onSubmit={void form.handleSubmit(onSubmit)}>
         <div className="space-y-4">
           <FormField
             control={form.control}
@@ -154,7 +149,7 @@ export const CreateGameForm: FC<Props> = ({ children }: Props) => {
                 <FormControl>
                   <RadioGroup
                     onValueChange={field.onChange}
-                    defaultValue={field.value}
+                    defaultValue={String(field.value)}
                     className="flex items-baseline space-x-4"
                   >
                     <FormItem className="items-center space-y-0 space-x-2">
@@ -252,7 +247,7 @@ export const CreateGameForm: FC<Props> = ({ children }: Props) => {
                     <Input
                       placeholder="場代"
                       className="w-[250px]"
-                      defaultValue={field.value ?? 0}
+                      defaultValue={String(field.value ?? 0)}
                       onChange={(e) => field.onChange(Number(e.target.value))}
                     />
                   </FormControl>

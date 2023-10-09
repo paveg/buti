@@ -1,11 +1,9 @@
-import { Game } from "@prisma/client";
-import { FC } from "react";
+import { type FC } from "react";
 import { EditGameForm } from "~/components/form/editGameForm";
 import { Button } from "~/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -17,7 +15,7 @@ type Props = {
   gameId: string;
 };
 
-export const EditGameDialog: FC<Props> = ({ gameId, year }: Props) => {
+export const EditGameDialog: FC<Props> = ({ gameId }: Props) => {
   const { data: game, isLoading } = api.game.getById.useQuery({ id: gameId });
 
   return (

@@ -1,9 +1,8 @@
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { GameDetailContainer } from "~/components/container/gameDetailContainer";
 import { Layout } from "~/layouts";
 
-export default function () {
+export default function GameDetail () {
   const router = useRouter();
   const { id } = router.query;
 

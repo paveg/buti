@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { FC } from "react";
+import { type FC } from "react";
 import { useForm } from "react-hook-form";
-import * as z from "zod";
+import type * as z from "zod";
 import {
   RateStrings,
   Round,
@@ -19,14 +19,11 @@ import {
   FormLabel,
   FormMessage,
 } from "~/ui/form";
-import { Input } from "~/ui/input";
-import { Label } from "~/ui/label";
 import { RadioGroup, RadioGroupItem } from "~/ui/radio-group";
 import {
   Select,
   SelectContent,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "~/ui/select";
@@ -66,7 +63,7 @@ export const CreateRuleForm: FC = () => {
     }
     return mutateAsync(values, {
       onSettled: () => {
-        refetch();
+        void refetch();
       },
       onSuccess: () => {
         toast({
@@ -79,7 +76,7 @@ export const CreateRuleForm: FC = () => {
   return (
     <div className="mx-auto w-[1000px]">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <form onSubmit={void form.handleSubmit(onSubmit)} className="space-y-8">
           <div className="flex space-x-8">
             <FormField
               control={form.control}
@@ -91,7 +88,7 @@ export const CreateRuleForm: FC = () => {
                     <RadioGroup
                       name="round"
                       onValueChange={(value) => field.onChange(value as Round)}
-                      defaultValue={field.value}
+                      defaultValue={String(field.value)}
                       className="flex flex-col space-y-1"
                     >
                       <FormItem className="flex items-center space-x-3 space-y-0">
@@ -128,7 +125,7 @@ export const CreateRuleForm: FC = () => {
                     <RadioGroup
                       name="uma"
                       onValueChange={(value) => field.onChange(value as Uma)}
-                      defaultValue={field.value}
+                      defaultValue={String(field.value)}
                       className="flex flex-col space-y-1"
                     >
                       <FormItem className="flex items-center space-x-3 space-y-0">
@@ -184,9 +181,9 @@ export const CreateRuleForm: FC = () => {
                 <FormItem>
                   <FormLabel>レート</FormLabel>
                   <Select
-                    value={field.value}
+                    value={String(field.value)}
                     onValueChange={(value) => field.onChange(Number(value))}
-                    defaultValue={field.value}
+                    defaultValue={String(field.value)}
                   >
                     <FormControl>
                       <SelectTrigger className="w-[180px]">
@@ -218,9 +215,9 @@ export const CreateRuleForm: FC = () => {
                 <FormItem>
                   <FormLabel>チップ</FormLabel>
                   <Select
-                    value={field.value}
+                    value={String(field.value)}
                     onValueChange={(value) => field.onChange(Number(value))}
-                    defaultValue={field.value}
+                    defaultValue={String(field.value)}
                   >
                     <FormControl>
                       <SelectTrigger className="w-[180px]">

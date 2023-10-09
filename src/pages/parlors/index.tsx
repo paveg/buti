@@ -1,9 +1,8 @@
 import { CreateParlorForm } from "~/components/form/createParlorForm";
 import { ParlorTable } from "~/components/table/parlorTable";
 import { Layout } from "~/layouts";
-import { api } from "~/utils/api";
 
-export default function () {
+export default function ParlorIndex () {
   return (
     <Layout>
       <ParlorTable />

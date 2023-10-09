@@ -1,15 +1,11 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Game } from "@prisma/client";
 import { CalendarIcon, CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
 import { useQueryClient } from "@tanstack/react-query";
-import { type ClassValue } from "clsx";
 import { format } from "date-fns";
 import { ja } from "date-fns/locale";
-import { FC } from "react";
+import { type FC } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { MemberCombobox } from "~/components/combobox/memberCombobox";
-import { ParlorCombobox } from "~/components/combobox/parlorCombobox";
 import { cn } from "~/lib/utils";
 import { Button } from "~/ui/button";
 import { Calendar } from "~/ui/calendar";
@@ -59,7 +55,6 @@ export const GameFormSchema = z.object({
 export const EditGameForm: FC<Props> = ({ gameId, children }: Props) => {
   const {
     data: game,
-    isLoading,
     refetch,
   } = api.game.getById.useQuery({ id: gameId });
   const queryKey = api.game.getByYear.getQueryKey();
@@ -77,12 +72,12 @@ export const EditGameForm: FC<Props> = ({ gameId, children }: Props) => {
     return mutateAsync(
       { id: game.id, ...values },
       {
-        onSuccess: (res) => {
+        onSuccess: () => {
           toast({
             title: "ゲームを更新しました",
           });
-          refetch();
-          queryClient.invalidateQueries(queryKey);
+          void refetch();
+          void queryClient.invalidateQueries(queryKey);
         },
         onError: (err) => {
           toast({
@@ -92,14 +87,13 @@ export const EditGameForm: FC<Props> = ({ gameId, children }: Props) => {
           });
           console.error(err);
         },
-        onSettled: () => {},
       },
     );
   }
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
+      <form onSubmit={void form.handleSubmit(onSubmit)}>
         <div className="space-y-4">
           <FormField
             control={form.control}
@@ -171,7 +165,7 @@ export const EditGameForm: FC<Props> = ({ gameId, children }: Props) => {
                 <FormControl>
                   <RadioGroup
                     onValueChange={field.onChange}
-                    defaultValue={field.value}
+                    defaultValue={String(field.value)}
                     className="flex items-baseline space-x-4"
                   >
                     <FormItem className="items-center space-y-0 space-x-2">
@@ -213,7 +207,7 @@ export const EditGameForm: FC<Props> = ({ gameId, children }: Props) => {
                           )}
                         >
                           {field.value
-                            ? parlors.find(
+                            ? parlors?.find(
                                 (parlor) => parlor.id === field.value,
                               )?.name
                             : "雀荘を選択してください"}
@@ -229,7 +223,7 @@ export const EditGameForm: FC<Props> = ({ gameId, children }: Props) => {
                         />
                         <CommandEmpty>雀荘が見つかりません</CommandEmpty>
                         <CommandGroup>
-                          {parlors.map((parlor) => (
+                          {parlors?.map((parlor) => (
                             <CommandItem
                               value={parlor.id}
                               key={parlor.id}
@@ -269,7 +263,7 @@ export const EditGameForm: FC<Props> = ({ gameId, children }: Props) => {
                     <Input
                       placeholder="場代"
                       className="w-[250px]"
-                      defaultValue={field.value ?? 0}
+                      defaultValue={String(field.value ?? 0)}
                       onChange={(e) => field.onChange(Number(e.target.value))}
                     />
                   </FormControl>

@@ -1,13 +1,9 @@
-import { Game, GameResult, Member, Rule, TipResult } from "@prisma/client";
+import { type Game, type GameResult, type Member, type Rule, type TipResult } from "@prisma/client";
 import { formatISO } from "date-fns";
-import { signIn, signOut, useSession } from "next-auth/react";
-import Head from "next/head";
-import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { CreateGameDialog } from "~/components/dialog/createGameDialog";
 import { EditGameDialog } from "~/components/dialog/editGameDialog";
-import { AspectRatio } from "~/components/ui/aspect-ratio";
 import { Layout } from "~/layouts";
 import { DefaultQuantity } from "~/models/rule";
 import { Button } from "~/ui/button";
@@ -51,14 +47,17 @@ const calcScoreByGame = (
   member: Member,
 ): number => {
   return GroupBy(gameResults, (result) => result.sequence).reduce(
-    (acc, [seq, results]) => {
+    (acc, [_, results]) => {
       let acc2: number = acc;
       results
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         .filter((result) => result.member.id === member.id)
         .forEach((result) => {
           acc2 +=
             result.rank === 1
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
               ? topScore(game.rule, results, member)
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
               : calcScore(result, game.rule);
         });
       return acc2;
@@ -89,8 +88,9 @@ const positionByRank = (
   rank: number,
 ) => {
   return GroupBy(gameResults, (result) => result.sequence).filter(
-    ([seq, results]) => {
+    ([_, results]) => {
       return results.some(
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         (result) => result.member.id === member.id && result.rank === rank,
       );
     },
@@ -99,8 +99,9 @@ const positionByRank = (
 
 const killedCount = (gameResults: GameResult[], member: Member) => {
   return GroupBy(gameResults, (result) => result.sequence).filter(
-    ([seq, results]) => {
+    ([_, results]) => {
       return results.some(
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         (result) => result.member.id === member.id && result.negative,
       );
     },
@@ -281,6 +282,7 @@ export default function Home() {
                         key={`${member.id}-rank-average`}
                       >
                         {(
+                          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                           [...Array(game.headCount)]
                             .map((_, index) => {
                               return (
@@ -310,6 +312,7 @@ export default function Home() {
                         key={`${member.id}-plus-percentage`}
                       >
                         {(
+                          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                           ([...Array(2)]
                             .map((_, index) => {
                               return positionByRank(

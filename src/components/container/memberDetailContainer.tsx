@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { type FC } from "react";
 import {
   CartesianGrid,
   Line,
@@ -12,8 +12,8 @@ import { api } from "~/utils/api";
 type Props = {
   id: string;
 };
-export const MemberDetailContainer: FC<Props> = ({ id }: props) => {
-  const { data: member, isLoading } = api.member.get.useQuery({ id: id });
+export const MemberDetailContainer: FC<Props> = ({id}: Props) => {
+  const { data: member, isLoading } = api.member.get.useQuery({id: id});
 
   return (
     <>

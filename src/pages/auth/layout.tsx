@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { AspectRatio } from "~/components/ui/aspect-ratio";
+import { AspectRatio } from "~/ui/aspect-ratio";
 
 export function AuthLayout({ children }: { children: React.ReactNode }) {
   return (

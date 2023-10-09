@@ -1,41 +1,12 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Game } from "@prisma/client";
-import { CalendarIcon, CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
-import { useQueryClient } from "@tanstack/react-query";
-import { type ClassValue } from "clsx";
-import { format } from "date-fns";
-import { ja } from "date-fns/locale";
-import { FC } from "react";
+import { type Game } from "@prisma/client";
+
+import { type FC } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { MemberCombobox } from "~/components/combobox/memberCombobox";
-import { ParlorCombobox } from "~/components/combobox/parlorCombobox";
-import { cn } from "~/lib/utils";
-import { Button } from "~/ui/button";
-import { Calendar } from "~/ui/calendar";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-} from "~/ui/command";
 import {
   Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
 } from "~/ui/form";
-import { Input } from "~/ui/input";
-import { Popover, PopoverContent, PopoverTrigger } from "~/ui/popover";
-import { RadioGroup, RadioGroupItem } from "~/ui/radio-group";
-import { Skeleton } from "~/ui/skeleton";
-import { toast } from "~/ui/use-toast";
-import { api } from "~/utils/api";
-import { SearchMemberForm } from "./searchMemberForm";
 
 type Props = {
   children?: React.ReactNode;
@@ -62,17 +33,7 @@ export const GameResultFormSchema = z.object({
 
 export const AddGameResultForm: FC<Props> = ({
   children,
-  game,
-  sequence,
 }: Props) => {
-  const defaultValue = {
-    gameId: game.id,
-    point: 25000,
-    rank: 0,
-    kill: false,
-    negative: false,
-    sequence: sequence,
-  };
   const form = useForm<z.infer<typeof GameResultFormSchema>>({
     resolver: zodResolver(GameResultFormSchema),
     defaultValues: {},

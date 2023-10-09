@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { FC } from "react";
+import { type FC } from "react";
 import { cn } from "~/lib/utils";
 import { Button } from "~/ui/button";
 
@@ -15,28 +15,28 @@ export const Navigation: FC = ({ ...props }) => {
             {...props}
           >
             <Button
-              className={router.asPath === "/" && "font-bold"}
+              className={router.asPath === "/" ? "font-bold" : ""}
               variant="link"
               asChild
             >
               <Link href="/">戦績</Link>
             </Button>
             <Button
-              className={router.asPath === "/members" && "font-bold"}
+              className={router.asPath === "/members" ? "font-bold" : ""}
               variant="link"
               asChild
             >
               <Link href="/members">メンバー</Link>
             </Button>
             <Button
-              className={router.asPath === "/rules" && "font-bold"}
+              className={router.asPath === "/rules" ? "font-bold" : ""}
               variant="link"
               asChild
             >
               <Link href="/rules">ルール</Link>
             </Button>
             <Button
-              className={router.asPath === "/parlors" && "font-bold"}
+              className={router.asPath === "/parlors" ? "font-bold" : ""}
               variant="link"
               asChild
             >

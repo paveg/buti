@@ -1,13 +1,9 @@
-import { Game, GameResult, Member, Rule, TipResult } from "@prisma/client";
+import { type Game, type GameResult, type Member, type Rule, type TipResult } from "@prisma/client";
 import { formatISO } from "date-fns";
-import { signIn, signOut, useSession } from "next-auth/react";
-import Head from "next/head";
-import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { CreateGameDialog } from "~/components/dialog/createGameDialog";
 import { EditGameDialog } from "~/components/dialog/editGameDialog";
-import { AspectRatio } from "~/components/ui/aspect-ratio";
 import { Layout } from "~/layouts";
 import { DefaultQuantity } from "~/models/rule";
 import { Button } from "~/ui/button";
@@ -45,20 +41,24 @@ const topScore = (rule: Rule, results: GameResult[], member: Member) => {
     }, 0);
 };
 
+type GameWithRule = Game & { rule: Rule };
+
 const calcScoreByGame = (
-  game: Game,
+  game: GameWithRule,
   gameResults: GameResult[],
   member: Member,
 ): number => {
   return GroupBy(gameResults, (result) => result.sequence).reduce(
-    (acc, [seq, results]) => {
+    (acc, [_, results]) => {
       let acc2: number = acc;
       results
-        .filter((result) => result.member.id === member.id)
+        .filter((result) => result.memberId === member.id)
         .forEach((result) => {
           acc2 +=
             result.rank === 1
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
               ? topScore(game.rule, results, member)
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
               : calcScore(result, game.rule);
         });
       return acc2;
@@ -89,9 +89,10 @@ const positionByRank = (
   rank: number,
 ) => {
   return GroupBy(gameResults, (result) => result.sequence).filter(
-    ([seq, results]) => {
+    ([_, results]) => {
       return results.some(
-        (result) => result.member.id === member.id && result.rank === rank,
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        (result) => result.memberId === member.id && result.rank === rank,
       );
     },
   ).length;
@@ -99,9 +100,9 @@ const positionByRank = (
 
 const killedCount = (gameResults: GameResult[], member: Member) => {
   return GroupBy(gameResults, (result) => result.sequence).filter(
-    ([seq, results]) => {
+    ([_, results]) => {
       return results.some(
-        (result) => result.member.id === member.id && result.negative,
+        (result) => result.memberId === member.id && result.negative,
       );
     },
   ).length;
@@ -111,7 +112,6 @@ export default function Home() {
   const [year, setYear] = useState<number>(new Date().getFullYear());
   const { data: games, isLoading } = api.game.getByYear.useQuery({
     year: year,
-    initialData: [],
   });
 
   return (
@@ -119,7 +119,7 @@ export default function Home() {
       <h1 className="my-4 text-2xl text-center">{year}年の戦績</h1>
       <CreateGameDialog />
       {!isLoading &&
-        games.map((game) => {
+        games?.map((game) => {
           const uniqMembers = UniqueModels<Member>(
             game.results.map((result) => {
               return result.member;
@@ -281,6 +281,7 @@ export default function Home() {
                         key={`${member.id}-rank-average`}
                       >
                         {(
+                          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                           [...Array(game.headCount)]
                             .map((_, index) => {
                               return (
@@ -310,6 +311,7 @@ export default function Home() {
                         key={`${member.id}-plus-percentage`}
                       >
                         {(
+                          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                           ([...Array(2)]
                             .map((_, index) => {
                               return positionByRank(

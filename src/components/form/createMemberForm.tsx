@@ -1,7 +1,8 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Member, member } from "@prisma/client";
+import { type Member } from "@prisma/client";
+import { type FC } from "react";
 import { useForm } from "react-hook-form";
-import * as z from "zod";
+import type * as z from "zod";
 import { Button } from "~/ui/button";
 import {
   Form,
@@ -43,9 +44,7 @@ export const CreateMemberForm: FC<Props> = ({ members }: Props) => {
     }
 
     return mutateAsync(values, {
-      onSettled: () => {
-        refetch();
-      },
+      onSettled: () => { void refetch() },
       onSuccess: () => {
         toast({
           title: "メンバーを追加しました",

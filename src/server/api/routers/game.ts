@@ -50,7 +50,6 @@ export const gameRouter = createTRPCRouter({
         date: {
           gte: new Date(`${input.year}-01-01`),
           lt: new Date(`${input.year}-12-31`),
-
         }
       }
     }

@@ -76,7 +76,7 @@ export const CreateRuleForm: FC = () => {
   return (
     <div className="mx-auto w-[1000px]">
       <Form {...form}>
-        <form onSubmit={void form.handleSubmit(onSubmit)} className="space-y-8">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <div className="flex space-x-8">
             <FormField
               control={form.control}

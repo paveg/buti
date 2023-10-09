@@ -60,7 +60,7 @@ export default function MemberIndex () {
                 }, 0) /
                   matchCount) *
                 100
-              ).toFixed(2);
+              );
               const lastPlaceRate = (
                 (member.results.reduce((acc, result) => {
                   if (result.rank === 4) {
@@ -70,16 +70,16 @@ export default function MemberIndex () {
                 }, 0) /
                   matchCount) *
                 100
-              ).toFixed(2);
-              const avgRank = (rankedCount / matchCount).toFixed(2);
+              )
+              const avgRank = (rankedCount / matchCount);
               return (
                 <TableRow key={member.id}>
                   <TableCell className="w-[120px]">{member.name}</TableCell>
                   <TableCell>{matchCount}</TableCell>
-                  <TableCell>{`${avgRank}位`}</TableCell>
-                  <TableCell>{`${winRate}%`}</TableCell>
+                  <TableCell>{isNaN(avgRank) ? '-' : `${avgRank.toFixed(2)}位`}</TableCell>
+                  <TableCell>{isNaN(winRate) ? '-' : `${winRate.toFixed(2)}%`}</TableCell>
                   <TableCell>
-                    {`${lastPlaceRate}%`}
+                    {isNaN(lastPlaceRate) ? '-' : `${lastPlaceRate.toFixed(2)}%`}
                   </TableCell>
                   <TableCell className="w-[160px]">
                     <div className="flex space-x-4">

@@ -93,7 +93,7 @@ export const EditGameForm: FC<Props> = ({ gameId, children }: Props) => {
 
   return (
     <Form {...form}>
-      <form onSubmit={void form.handleSubmit(onSubmit)}>
+      <form onSubmit={form.handleSubmit(onSubmit)}>
         <div className="space-y-4">
           <FormField
             control={form.control}

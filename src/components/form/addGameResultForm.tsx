@@ -45,7 +45,7 @@ export const AddGameResultForm: FC<Props> = ({
 
   return (
     <Form {...form}>
-      <form onSubmit={void form.handleSubmit(onSubmit)}>
+      <form onSubmit={form.handleSubmit(onSubmit)}>
         <div className="space-y-4">
           {/* {[...Array(game.headCount)].map((_, i) => {
             return <MemberSearchForm key={`member-${i}`} form={form} number={i} />;

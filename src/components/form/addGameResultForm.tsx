@@ -95,7 +95,6 @@ export const AddGameResultForm: FC<Props> = ({ children, game }: Props) => {
       },
     });
   }
-  console.info(form.getValues());
 
   return (
     <>
@@ -116,7 +115,7 @@ export const AddGameResultForm: FC<Props> = ({ children, game }: Props) => {
                         <FormLabel className="pt-4 md:pt-0">
                           {index + 1}位
                         </FormLabel>
-                        <Popover classN>
+                        <Popover>
                           <PopoverTrigger asChild>
                             <FormControl>
                               <Button
@@ -199,7 +198,7 @@ export const AddGameResultForm: FC<Props> = ({ children, game }: Props) => {
                         <FormControl>
                           <Input
                             type="number"
-                            className="ml-auto w-2/5 justify-between md:ml-0 md:w-3/5"
+                            className="ml-5 mr-auto w-2/5 justify-between md:ml-0 md:w-3/5"
                             placeholder="得点"
                             {...field}
                             onChange={(e) => {
@@ -208,19 +207,23 @@ export const AddGameResultForm: FC<Props> = ({ children, game }: Props) => {
                           />
                         </FormControl>
                         <FormMessage />
-                        <div className="space-x-1 pt-2">
-                          <Checkbox
-                            className="ml-2"
-                            id={`kill-${index}`}
-                            onCheckedChange={(checked) => {
-                              form.setValue(
-                                `gameResults.${index}.kill`,
-                                checked
-                              );
-                            }}
-                          />
-                          <Label htmlFor={`kill-${index}`}>飛び賞（+10）</Label>
-                        </div>
+                        {form.getValues(`gameResults.${index}.point`) >= 0 && (
+                          <div className="space-x-1 pt-2">
+                            <Checkbox
+                              className="ml-2"
+                              id={`kill-${index}`}
+                              onCheckedChange={(checked) => {
+                                form.setValue(
+                                  `gameResults.${index}.kill`,
+                                  Boolean(checked)
+                                );
+                              }}
+                            />
+                            <Label htmlFor={`kill-${index}`}>
+                              飛び賞（+10）
+                            </Label>
+                          </div>
+                        )}
                       </FormItem>
                     );
                   }}

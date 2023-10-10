@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
+import { type FC } from "react";
 import { Skeleton } from "~/ui/skeleton";
 import {
   Table,
@@ -10,7 +11,6 @@ import {
 } from "~/ui/table";
 
 type Props = {
-  isLoading: boolean;
   tableHeader?: React.ReactNode;
   columnCount?: number;
 };

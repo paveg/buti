@@ -20,12 +20,12 @@ export const CreateGameResultDialog: FC<Props> = ({ game }: Props) => {
     <Dialog>
       <DialogTrigger asChild>
         <div className="flex">
-          <Button className="ml-auto" size="sm">
+          <Button className="ml-auto mr-4" size="sm">
             対局を追加
           </Button>
         </div>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="w-5/6">
         <DialogHeader>
           <DialogTitle>対局を追加</DialogTitle>
         </DialogHeader>

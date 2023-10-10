@@ -148,7 +148,7 @@ export const CreateGameForm: FC<Props> = ({ children }: Props) => {
                 <FormLabel>人数</FormLabel>
                 <FormControl>
                   <RadioGroup
-                    onValueChange={field.onChange}
+                    onValueChange={(value) => field.onChange(Number(value))}
                     defaultValue={String(field.value)}
                     className="flex items-baseline space-x-4"
                   >
@@ -314,14 +314,13 @@ export const CreateGameForm: FC<Props> = ({ children }: Props) => {
                       </Command>
                     </PopoverContent>
                   </Popover>
-
                   <FormMessage />
                 </FormItem>
               )}
             />
           )}
         </div>
-        <div className="my-2">{children}</div>
+        <div className="my-4">{children}</div>
       </form>
     </Form>
   );

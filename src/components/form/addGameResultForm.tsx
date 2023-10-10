@@ -8,6 +8,7 @@ import * as z from "zod";
 import { cn } from "~/lib/utils";
 import { type GameWithResults } from "~/types/game";
 import { Button } from "~/ui/button";
+import { Checkbox } from "~/ui/checkbox";
 import {
   Command,
   CommandEmpty,
@@ -24,6 +25,7 @@ import {
   FormMessage,
 } from "~/ui/form";
 import { Input } from "~/ui/input";
+import { Label } from "~/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "~/ui/popover";
 import { Skeleton } from "~/ui/skeleton";
 import { toast } from "~/ui/use-toast";
@@ -102,24 +104,26 @@ export const AddGameResultForm: FC<Props> = ({ children, game }: Props) => {
         <form onSubmit={form.handleSubmit(onSubmit)}>
           {fields.map((field, index) => {
             return (
-              <div key={field.id} className="my-4 flex items-end space-x-6">
+              <div className="mt-4 rounded-lg md:mt-6" key={field.id}>
                 {isLoading ? (
-                  <Skeleton />
+                  <Skeleton className="ml-auto h-8 w-5/6 md:ml-0 md:w-3/5" />
                 ) : (
                   <FormField
                     control={form.control}
                     name={`gameResults.${index}.memberId` as const}
                     render={({ field }) => (
-                      <FormItem className="flex flex-col">
-                        <FormLabel>{index + 1}位</FormLabel>
-                        <Popover>
+                      <FormItem className="flex md:flex-col">
+                        <FormLabel className="pt-4 md:pt-0">
+                          {index + 1}位
+                        </FormLabel>
+                        <Popover classN>
                           <PopoverTrigger asChild>
                             <FormControl>
                               <Button
                                 variant="outline"
                                 role="combobox"
                                 className={cn(
-                                  "w-[230px] justify-between",
+                                  "ml-auto w-5/6 justify-between md:ml-0 md:w-3/5",
                                   !field.value && "text-muted-foreground"
                                 )}
                               >
@@ -132,7 +136,7 @@ export const AddGameResultForm: FC<Props> = ({ children, game }: Props) => {
                               </Button>
                             </FormControl>
                           </PopoverTrigger>
-                          <PopoverContent className="w-[200px] p-0">
+                          <PopoverContent className="w-10/11 p-0">
                             <Command>
                               <CommandInput
                                 placeholder="メンバーを検索"
@@ -142,28 +146,37 @@ export const AddGameResultForm: FC<Props> = ({ children, game }: Props) => {
                                 メンバーが見つかりません
                               </CommandEmpty>
                               <CommandGroup>
-                                {gms.map((member) => (
-                                  <CommandItem
-                                    value={member.id}
-                                    key={member.id}
-                                    onSelect={() => {
-                                      form.setValue(
-                                        `gameResults.${index}.memberId`,
-                                        member.id
-                                      );
-                                    }}
-                                  >
-                                    {member.name}
-                                    <CheckIcon
-                                      className={cn(
-                                        "ml-auto h-4 w-4",
-                                        member.id === field.value
-                                          ? "opacity-100"
-                                          : "opacity-0"
-                                      )}
-                                    />
-                                  </CommandItem>
-                                ))}
+                                {gms
+                                  .filter(
+                                    (m) =>
+                                      !form
+                                        .getValues()
+                                        .gameResults.map((r) => r.memberId)
+                                        .includes(m.id)
+                                  )
+                                  .map((member) => (
+                                    <CommandItem
+                                      value={member.id}
+                                      key={member.id}
+                                      onSelect={() => {
+                                        console.info(member.id);
+                                        form.setValue(
+                                          `gameResults.${index}.memberId`,
+                                          member.id
+                                        );
+                                      }}
+                                    >
+                                      {member.name}
+                                      <CheckIcon
+                                        className={cn(
+                                          "ml-auto h-4 w-4",
+                                          member.id === field.value
+                                            ? "opacity-100"
+                                            : "opacity-0"
+                                        )}
+                                      />
+                                    </CommandItem>
+                                  ))}
                               </CommandGroup>
                             </Command>
                           </PopoverContent>
@@ -179,20 +192,35 @@ export const AddGameResultForm: FC<Props> = ({ children, game }: Props) => {
                   control={form.control}
                   render={({ field }) => {
                     return (
-                      <FormItem>
-                        <FormLabel>得点</FormLabel>
+                      <FormItem className="flex md:flex-col">
+                        <FormLabel className="pt-5">
+                          <>得点</>
+                        </FormLabel>
                         <FormControl>
                           <Input
-                            className="w-[200px]"
+                            type="number"
+                            className="ml-auto w-2/5 justify-between md:ml-0 md:w-3/5"
                             placeholder="得点"
                             {...field}
                             onChange={(e) => {
-                              const val = Number(e.target.value);
-                              return field.onChange(isNaN(val) ? 0 : val);
+                              return field.onChange(Number(e.target.value));
                             }}
                           />
                         </FormControl>
                         <FormMessage />
+                        <div className="space-x-1 pt-2">
+                          <Checkbox
+                            className="ml-2"
+                            id={`kill-${index}`}
+                            onCheckedChange={(checked) => {
+                              form.setValue(
+                                `gameResults.${index}.kill`,
+                                checked
+                              );
+                            }}
+                          />
+                          <Label htmlFor={`kill-${index}`}>飛び賞（+10）</Label>
+                        </div>
                       </FormItem>
                     );
                   }}
@@ -200,7 +228,7 @@ export const AddGameResultForm: FC<Props> = ({ children, game }: Props) => {
               </div>
             );
           })}
-          <div className="my-4">{children}</div>
+          <div className="my-8">{children}</div>
         </form>
       </Form>
     </>

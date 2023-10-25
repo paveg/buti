@@ -1,9 +1,19 @@
-import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
+import { ExclamationTriangleIcon, RocketIcon } from "@radix-ui/react-icons";
 import { PlayerTable } from "~/components/playerTable";
 import { SkeletonTable } from "~/components/skeletonTable";
 import { Layout } from "~/layouts";
 import { Alert, AlertDescription, AlertTitle } from "~/ui/alert";
 import { api } from "~/utils/api";
+
+const EmptyComponent = () => {
+  return <Alert>
+    <RocketIcon className="h-4 w-4" />
+    <AlertTitle>プレイヤーが存在しません</AlertTitle>
+    <AlertDescription>
+      プレイヤーを追加してください
+    </AlertDescription>
+  </Alert>
+}
 
 const AlertComponent = ({ message }: { message: string }) => {
   return <Alert variant="destructive">
@@ -21,7 +31,7 @@ export default function Home() {
       {isLoading ? (
         <SkeletonTable columnCount={2} />
       ) :
-        isError ? <AlertComponent message={error?.message} /> : <PlayerTable players={players} />
+        isError ? <AlertComponent message={error?.message} /> : players.length > 0 ? <PlayerTable players={players} /> : <EmptyComponent />
       }
     </Layout>
   );

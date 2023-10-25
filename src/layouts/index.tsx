@@ -10,7 +10,7 @@ export const Layout: FC<Props> = ({ children }: Props) => {
   return (
     <>
       <Navigation />
-      <div className="my-4 overflow-hidden text-center md:container md:my-8">
+      <div className="my-2 overflow-hidden md:container md:my-4">
         {children}
       </div>
       <Toaster />

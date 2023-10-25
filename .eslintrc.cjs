@@ -1,5 +1,6 @@
 /** @type {import("eslint").Linter.Config} */
 const config = {
+  ignorePatterns: ["**/ui/*.tsx"],
   overrides: [
     {
       extends: [

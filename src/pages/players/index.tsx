@@ -7,7 +7,7 @@ import { api } from "~/utils/api";
 
 
 export default function Players() {
-  const subject = "プレイヤー"
+  const subject = "雀士"
   const { data: players, isLoading, isError, error } = api.player.getAll.useQuery();
   return (
     <Layout>

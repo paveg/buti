@@ -80,6 +80,7 @@ model Parlor {
 
 model GameSession {
   id        String   @id @default(cuid())
+  date      DateTime
   parlorId  String
   parlor    Parlor   @relation(fields: [parlorId], references: [id])
   createdAt DateTime @default(now())
@@ -90,7 +91,6 @@ model GameSession {
 
 model Game {
   id          String       @id @default(cuid())
-  date        DateTime
   sequence    Int
   playerCount Int
   sessionId   String

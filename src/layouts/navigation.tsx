@@ -28,7 +28,7 @@ export const Navigation: FC = ({ ...props }) => {
               variant="link"
               asChild
             >
-              <Link href="/players">プレイヤー</Link>
+              <Link href="/players">雀士</Link>
             </Button>
             <Button
               className={router.asPath === "/parlors" ? "font-bold" : ""}

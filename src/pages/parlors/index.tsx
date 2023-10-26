@@ -1,6 +1,5 @@
 import { CommonAlert } from "~/components/commonAlert";
-import { EmptyResource } from "~/components/emptyResource";
-import { ParlorTable } from "~/components/parlorTable";
+import { ParlorTable } from "~/components/parlor/table";
 import { SkeletonTable } from "~/components/skeletonTable";
 import { Layout } from "~/layouts";
 import { api } from "~/utils/api";
@@ -14,7 +13,7 @@ export default function Parlors() {
       {isLoading ? (
         <SkeletonTable columnCount={2} />
       ) :
-        isError ? <CommonAlert message={error?.message} /> : parlors.length > 0 ? <ParlorTable parlors={parlors} /> : <EmptyResource subject={subject} />
+        isError ? <CommonAlert message={error?.message} /> : <ParlorTable parlors={parlors} />
       }
     </Layout>
   );

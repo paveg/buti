@@ -63,28 +63,29 @@ model VerificationToken {
 }
 
 model Player {
-  id         String       @id @default(cuid())
-  name       String
-  createdAt  DateTime     @default(now())
-  updatedAt  DateTime     @updatedAt
-  GamePlayer GamePlayer[]
+  id          String       @id @default(cuid())
+  name        String
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  gamePlayers GamePlayer[]
 }
 
 model Parlor {
-  id          String        @id @default(cuid())
-  name        String
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-  GameSession GameSession[]
+  id        String        @id @default(cuid())
+  name      String
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  sessions  GameSession[]
 }
 
 model GameSession {
   id        String   @id @default(cuid())
   parlorId  String
-  Parlor    Parlor   @relation(fields: [parlorId], references: [id])
+  parlor    Parlor   @relation(fields: [parlorId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  Rule      Rule?
+  rule      Rule?
+  games     Game[]
 }
 
 model Game {
@@ -92,9 +93,13 @@ model Game {
   date        DateTime
   sequence    Int
   playerCount Int
-  GamePlayer  GamePlayer[]
+  sessionId   String
+  session     GameSession  @relation(fields: [sessionId], references: [id])
+  players     GamePlayer[]
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
+
+  @@unique([sessionId, sequence])
 }
 
 model GamePlayer {
@@ -118,7 +123,7 @@ model Rule {
   killScore     Int         @default(10000)
   chip          Int         @default(2000)
   gameSessionId String      @unique
-  GameSession   GameSession @relation(fields: [gameSessionId], references: [id])
+  session       GameSession @relation(fields: [gameSessionId], references: [id])
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
 }

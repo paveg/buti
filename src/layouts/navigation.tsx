@@ -30,6 +30,13 @@ export const Navigation: FC = ({ ...props }) => {
             >
               <Link href="/players">プレイヤー</Link>
             </Button>
+            <Button
+              className={router.asPath === "/parlors" ? "font-bold" : ""}
+              variant="link"
+              asChild
+            >
+              <Link href="/parlors">雀荘</Link>
+            </Button>
           </nav>
         </div>
       </div>

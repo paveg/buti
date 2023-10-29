@@ -17,6 +17,13 @@ export const columns: ColumnDef<ParlorWithGames>[] = [
     accessorKey: 'name'
   },
   {
+    header: '対局数',
+    cell: ({ row }) => {
+      const gameCount = row.original.sessions.reduce((acc, cur) => acc + cur.games.length, 0)
+      return <div>{gameCount}</div>
+    }
+  },
+  {
     header: ({ column }) => {
       return (
         <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
@@ -32,11 +39,4 @@ export const columns: ColumnDef<ParlorWithGames>[] = [
       return <div>{createdDate}</div>
     }
   },
-  {
-    header: '対局数',
-    cell: ({ row }) => {
-      const gameCount = row.original.sessions.reduce((acc, cur) => acc + cur.games.length, 0)
-      return <div>{gameCount}</div>
-    }
-  }
 ]

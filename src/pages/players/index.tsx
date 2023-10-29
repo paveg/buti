@@ -1,6 +1,6 @@
 import { CommonAlert } from "~/components/commonAlert";
 import { EmptyResource } from "~/components/emptyResource";
-import { PlayerTable } from "~/components/playerTable";
+import { PlayerTable } from "~/components/player/table";
 import { SkeletonTable } from "~/components/skeletonTable";
 import { Layout } from "~/layouts";
 import { api } from "~/utils/api";

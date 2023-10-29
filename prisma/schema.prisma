@@ -91,14 +91,13 @@ model GameSession {
 }
 
 model Game {
-  id          String       @id @default(cuid())
-  sequence    Int
-  playerCount Int
-  sessionId   String
-  session     GameSession  @relation(fields: [sessionId], references: [id])
-  players     GamePlayer[]
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+  id        String       @id @default(cuid())
+  sequence  Int
+  sessionId String
+  session   GameSession  @relation(fields: [sessionId], references: [id])
+  players   GamePlayer[]
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
 
   @@unique([sessionId, sequence])
 }
@@ -122,6 +121,7 @@ model Rule {
   uma         String        @default("10-30") // 5-10, 10-20, 10-30, 20-30
   oka         Int           @default(20000) // ((score * playerCount) + oka) / playerCount = initial score
   killScore   Int           @default(10000)
+  playerCount Int           @default(4)
   chip        Int           @default(2000)
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt

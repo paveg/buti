@@ -4,6 +4,8 @@ import { api } from "~/utils/api";
 import { CommonAlert } from "../commonAlert";
 import { SessionTable } from "../sessions/table";
 import { RuleTable } from "../rule/table";
+import { Skeleton } from "~/ui/skeleton";
+import { SkeletonTable } from "../skeletonTable";
 
 export const SessionDetailContainer = ({ id }: { id: string }) => {
   const {
@@ -12,12 +14,19 @@ export const SessionDetailContainer = ({ id }: { id: string }) => {
     isError,
     error,
   } = api.gameSession.getById.useQuery({ id: id });
-  if (isLoading) return <div>loading...</div>;
 
-  const sessionDate = format(new Date(gameSession?.date ?? ''), "yyyy/MM/dd");
-
-  return (
-    <Layout>
+  if (isLoading) {
+    return <Layout>
+      <div>
+        <h1 className="my-4">
+          <Skeleton className="w-1/3 mx-auto h-8" />
+          <SkeletonTable columnCount={5} />
+        </h1>
+      </div>
+    </Layout>
+  } else {
+    const sessionDate = format(new Date(gameSession?.date ?? ''), "yyyy/MM/dd");
+    return <Layout>
       {isError ? (
         <CommonAlert message={error?.message} />
       ) : (
@@ -30,6 +39,5 @@ export const SessionDetailContainer = ({ id }: { id: string }) => {
         </div>
       )}
     </Layout>
-  );
-
+  }
 }

@@ -11,6 +11,15 @@ import { Table, TableBody, TableCell, TableRow } from "~/ui/table";
 export const RuleTable = ({ rule }: { rule: Rule }) => {
   const data = [
     {
+      name: '対局種別',
+      value: rule?.playerCount === 4 ? '四麻' : '三麻',
+    },
+    {
+      // TODO: 記録できるようにする
+      name: 'ゲーム単位',
+      value: '半荘'
+    },
+    {
       name: 'オカ',
       value: `${rule?.oka}点`,
     },

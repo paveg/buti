@@ -23,8 +23,8 @@ type PlayerData = {
   [key: string]: string | number;
 };
 
-const defaultScore = ({ rule, playerCount }: { rule: Rule; playerCount: number }) => {
-  return 25000 + (Number(rule?.oka) / Number(playerCount))
+const defaultScore = ({ rule }: { rule: Rule }) => {
+  return 25000 + (Number(rule?.oka) / Number(rule?.playerCount))
 }
 
 const calculateScore = ({ defaultScore, rule, player, killedCount }: { defaultScore: number; rule: Rule; player: GamePlayer; killedCount: number }) => {
@@ -77,7 +77,7 @@ export const SessionTable = ({ session }: { session: SessionWithDetails }) => {
     }
   }
   for (const game of session.games) {
-    const ds = defaultScore({ rule: rule, playerCount: game.playerCount })
+    const ds = defaultScore({ rule: rule })
     const finalScoreKey = "finalScore";
     for (const player of game.players) {
       const record = data.find((record) => record.name === player.player.name);
@@ -118,7 +118,7 @@ export const SessionTable = ({ session }: { session: SessionWithDetails }) => {
       </TableHeader>
       <TableBody>
         {session.games.map((game, index) => {
-          const ds = defaultScore({ rule: rule, playerCount: game.playerCount })
+          const ds = defaultScore({ rule: rule })
           const killedCount = game.players.filter((player) => player.killed).length
           return (
             <TableRow key={game.id}>

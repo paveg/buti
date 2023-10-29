@@ -11,7 +11,7 @@ export default function Parlors() {
     <Layout>
       <h1 className="my-4 text-center text-2xl">{subject}</h1>
       {isLoading ? (
-        <SkeletonTable columnCount={2} />
+        <SkeletonTable columnCount={3} />
       ) :
         isError ? <CommonAlert message={error?.message} /> : <ParlorTable parlors={parlors} />
       }

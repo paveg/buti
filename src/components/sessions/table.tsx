@@ -41,6 +41,7 @@ const calculateScore = ({ defaultScore, rule, player, killedCount }: { defaultSc
       uma = rule.uma === '10-30' ? -30000 : 0
       break;
     default:
+      uma = 0
       break;
   }
   score += uma
@@ -67,6 +68,7 @@ export const SessionTable = ({ session }: { session: SessionWithDetails }) => {
     if (!data.find((record) => record.name === player.name)) {
       data.push({
         name: player.name,
+        finalScore: 0
       });
     }
   }
@@ -81,8 +83,6 @@ export const SessionTable = ({ session }: { session: SessionWithDetails }) => {
       }
     }
   }
-
-  console.info(data)
 
   // TODO: Replace hard-coded columns with dynamic columns using by ColumnDef
   const columns: ColumnDef<PlayerData>[] = [];

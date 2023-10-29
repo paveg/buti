@@ -85,8 +85,9 @@ model GameSession {
   parlor    Parlor   @relation(fields: [parlorId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  rule      Rule?
+  rule      Rule     @relation(fields: [ruleId], references: [id])
   games     Game[]
+  ruleId    String
 }
 
 model Game {
@@ -117,13 +118,12 @@ model GamePlayer {
 }
 
 model Rule {
-  id            String      @id @default(cuid())
-  uma           String      @default("10-30") // 5-10, 10-20, 10-30, 20-30
-  oka           Int         @default(20000) // ((score * playerCount) + oka) / playerCount = initial score
-  killScore     Int         @default(10000)
-  chip          Int         @default(2000)
-  gameSessionId String      @unique
-  session       GameSession @relation(fields: [gameSessionId], references: [id])
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
+  id          String        @id @default(cuid())
+  uma         String        @default("10-30") // 5-10, 10-20, 10-30, 20-30
+  oka         Int           @default(20000) // ((score * playerCount) + oka) / playerCount = initial score
+  killScore   Int           @default(10000)
+  chip        Int           @default(2000)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  GameSession GameSession[]
 }

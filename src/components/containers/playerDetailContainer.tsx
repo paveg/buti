@@ -2,6 +2,7 @@ import { Layout } from "~/layouts";
 import { api } from "~/utils/api";
 import { CommonAlert } from "../commonAlert";
 import { LoadingContainer } from "./loadingContainer";
+import { Table, TableBody, TableCell, TableRow } from "~/ui/table";
 
 export const PlayerDetailContainer = ({ id }: { id: string }) => {
   const {
@@ -32,6 +33,37 @@ export const PlayerDetailContainer = ({ id }: { id: string }) => {
     return curr.killed ? acc + 1 : acc
   }, 0) / gameCount
 
+  const data = [
+    {
+      label: '対局数',
+      value: gameCount
+    },
+    {
+      label: 'トップ率',
+      value: Number.isNaN(topRate) ? '記録がありません' : `${(topRate * 100).toFixed(2)}%`
+    },
+    {
+      label: 'ラス率',
+      value: Number.isNaN(lastRate) ? '記録がありません' : `${(lastRate * 100).toFixed(2)}%`
+    },
+    {
+      label: '平均順位',
+      value: Number.isNaN(averageRank) ? '記録がありません' : `${averageRank.toFixed(2)}位`
+    },
+    {
+      label: '連対率',
+      value: Number.isNaN(concatenationRate) ? '記録がありません' : `${(concatenationRate * 100).toFixed(2)}%`
+    },
+    {
+      label: '飛ばし率',
+      value: Number.isNaN(killRate) ? '記録がありません' : `${(killRate * 100).toFixed(2)}%`
+    },
+    {
+      label: 'トビ率',
+      value: Number.isNaN(killedRate) ? '記録がありません' : `${(killedRate * 100).toFixed(2)}%`
+    },
+  ]
+
   return (
     <Layout>
       {isError ? (
@@ -41,13 +73,22 @@ export const PlayerDetailContainer = ({ id }: { id: string }) => {
           <h1 className="my-4 text-center text-2xl">
             {player?.name}
           </h1>
-          <div>対局数: {gameCount}</div>
-          <div>トップ率: {Number.isNaN(topRate) ? '記録がありません' : `${(topRate * 100).toFixed(2)}%`}</div>
-          <div>ラス率: {Number.isNaN(lastRate) ? '記録がありません' : `${(lastRate * 100).toFixed(2)}%`}</div>
-          <div>平均順位: {Number.isNaN(averageRank) ? '記録がありません' : `${averageRank.toFixed(2)}位`}</div>
-          <div>連対率: {Number.isNaN(concatenationRate) ? '記録がありません' : `${(concatenationRate * 100).toFixed(2)}%`}</div>
-          <div>飛ばし率: {Number.isNaN(killRate) ? '記録がありません' : `${(killRate * 100).toFixed(2)}%`}</div>
-          <div>トビ率: {Number.isNaN(killedRate) ? '記録がありません' : `${(killedRate * 100).toFixed(2)}%`}</div>
+          <Table>
+            <TableBody>
+              {data.map((item) => {
+                return (
+                  <TableRow key={item.label}>
+                    <TableCell>
+                      {item.label}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      {item.value}
+                    </TableCell>
+                  </TableRow>
+                )
+              })}
+            </TableBody>
+          </Table>
         </div>
       )}
     </Layout>

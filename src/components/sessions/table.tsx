@@ -13,8 +13,11 @@ import {
 import { RoundDown } from '../../utils/number';
 import { HoverCard } from "~/ui/hover-card";
 import { HoverCardContent, HoverCardTrigger } from "@radix-ui/react-hover-card";
+import { Button } from "~/ui/button";
+import Link from "next/link";
 
 type PlayerData = {
+  id: string;
   name: string;
   finalScore: number;
   [key: string]: string | number;
@@ -67,6 +70,7 @@ export const SessionTable = ({ session }: { session: SessionWithDetails }) => {
   for (const player of allPlayers) {
     if (!data.find((record) => record.name === player.name)) {
       data.push({
+        id: player.id,
         name: player.name,
         finalScore: 0
       });
@@ -93,7 +97,7 @@ export const SessionTable = ({ session }: { session: SessionWithDetails }) => {
   });
 
   return (
-    <Table>
+    <Table className="w-full">
       <TableHeader>
         {table.getHeaderGroups().map((headerGroup) => {
           return (
@@ -102,7 +106,9 @@ export const SessionTable = ({ session }: { session: SessionWithDetails }) => {
               {data.map((record) => {
                 return (
                   <TableHead key={record.name} className="text-center">
-                    {record.name}
+                    <Button asChild variant="link">
+                      <Link href={`/players/${record.id}`}>{record.name}</Link>
+                    </Button>
                   </TableHead>
                 );
               })}
@@ -123,7 +129,7 @@ export const SessionTable = ({ session }: { session: SessionWithDetails }) => {
                   <TableCell key={player.player.name} className="text-center">
                     <HoverCard>
                       <HoverCardTrigger>
-                        <p>{RoundDown(score, 1000) / 1000}<span className="hidden sm:inline-block">({player.rank})</span></p>
+                        {RoundDown(score, 1000) / 1000}<span className="hidden sm:inline-block">({player.rank})</span>
                       </HoverCardTrigger>
                       <HoverCardContent side="top">
                         <Badge variant="secondary" className="ml-1 my-1 sm:my-0">得点: {player.score}</Badge>

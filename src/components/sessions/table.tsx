@@ -1,5 +1,4 @@
 import { type GamePlayer, type Rule } from "@prisma/client";
-import { TooltipContent } from "@radix-ui/react-tooltip";
 import { useReactTable, getCoreRowModel, type ColumnDef } from "@tanstack/react-table";
 import { type SessionWithDetails } from "~/types/gameSession";
 import { Badge } from "~/ui/badge";
@@ -11,7 +10,6 @@ import {
   TableHeader,
   TableRow,
 } from "~/ui/table";
-import { Tooltip, TooltipTrigger } from "~/ui/tooltip";
 import { RoundDown } from '../../utils/number';
 import { HoverCard } from "~/ui/hover-card";
 import { HoverCardContent, HoverCardTrigger } from "@radix-ui/react-hover-card";
@@ -73,14 +71,18 @@ export const SessionTable = ({ session }: { session: SessionWithDetails }) => {
     }
   }
   for (const game of session.games) {
-    const key = `score${game.sequence}`;
+    const ds = defaultScore({ rule: rule, playerCount: game.playerCount })
+    const finalScoreKey = "finalScore";
     for (const player of game.players) {
       const record = data.find((record) => record.name === player.player.name);
       if (record) {
-        record[key] = player.score;
+        const score = calculateScore({ defaultScore: ds, rule: rule, player: player, killedCount: game.players.filter((player) => player.killed).length })
+        record[finalScoreKey] = (record[finalScoreKey] ?? 0) + (RoundDown(score, 1000) / 1000)
       }
     }
   }
+
+  console.info(data)
 
   // TODO: Replace hard-coded columns with dynamic columns using by ColumnDef
   const columns: ColumnDef<PlayerData>[] = [];
@@ -123,9 +125,11 @@ export const SessionTable = ({ session }: { session: SessionWithDetails }) => {
                       {player.rank}
                     </Badge>
                     <HoverCard>
-                      <HoverCardTrigger>{RoundDown(score, 1000) / 1000}</HoverCardTrigger>
-                      <HoverCardContent className="w-80">
-                        実際の得点: {player.score}
+                      <HoverCardTrigger>
+                        <Badge variant="secondary" className="ml-1">{RoundDown(score, 1000) / 1000}</Badge>
+                      </HoverCardTrigger>
+                      <HoverCardContent sideOffset={6}>
+                        <Badge variant="secondary" className="ml-1 my-1 sm:my-0">得点: {player.score}</Badge>
                         {player.killer && (
                           <Badge className="ml-1">トビ賞</Badge>
                         )}
@@ -142,7 +146,24 @@ export const SessionTable = ({ session }: { session: SessionWithDetails }) => {
             </TableRow>
           );
         })}
+        {data.length !== 0 ? (
+          <TableRow>
+            <TableCell className="text-center">
+              合計
+            </TableCell>
+            {data.map((record) => {
+              return <TableCell key={record.name} className="text-center">
+                <Badge className="font-bold">{record.finalScore}</Badge>
+              </TableCell>
+            })}
+          </TableRow>
+        ) : (<TableRow>
+          <TableCell colSpan={columns.length} className="h-24 text-center">
+            対局が存在しません
+          </TableCell>
+        </TableRow>)
+        }
       </TableBody>
-    </Table>
+    </Table >
   );
 };

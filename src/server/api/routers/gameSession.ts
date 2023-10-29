@@ -7,6 +7,7 @@ export const gameSessionRouter = createTRPCRouter({
     return ctx.db.gameSession.findMany({
       include: {
         rule: true,
+        parlor: true,
         games: {
           include: {
             players: {
@@ -19,7 +20,10 @@ export const gameSessionRouter = createTRPCRouter({
             sequence: 'asc'
           }]
         },
-      }
+      },
+      orderBy: [{
+        date: 'desc'
+      }]
     })
   }),
   getById: publicProcedure.input(z.object({ id: z.string() })).query(({ ctx, input }) => {
@@ -35,7 +39,10 @@ export const gameSessionRouter = createTRPCRouter({
             players: {
               include: {
                 player: true
-              }
+              },
+              orderBy: [{
+                playerId: 'asc'
+              }]
             }
           },
           orderBy: [{

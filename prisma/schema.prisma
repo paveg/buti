@@ -54,101 +54,76 @@ model User {
   updatedAt     DateTime  @updatedAt
 }
 
-model Member {
-  id         String       @id @default(cuid())
-  name       String       @db.VarChar(128)
-  results    GameResult[]
-  tipResults TipResult[]
-  createdAt  DateTime     @default(now())
-  updatedAt  DateTime     @updatedAt
-}
-
-model GameResult {
-  id        String   @id @default(cuid())
-  game      Game     @relation(fields: [gameId], references: [id])
-  gameId    String
-  member    Member   @relation(fields: [memberId], references: [id])
-  memberId  String
-  point     Int      @default(25000)
-  rank      Int      @default(1) // @db.TinyInt(1) @default
-  kill      Boolean  @default(false) // @db.TinyInt(1)
-  negative  Boolean  @default(false) // @db.TinyInt(1)
-  // ゲーム結果の順番
-  sequence  Int      @default(0) // @db.TinyInt(3)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([memberId])
-  @@index([gameId])
-  @@index([memberId, gameId])
-}
-
-model Game {
-  id         String       @id @default(cuid())
-  name       String
-  date       DateTime     @default(now())
-  // 雀荘
-  parlor     Parlor       @relation(fields: [parlorId], references: [id])
-  parlorId   String
-  rule       Rule         @relation(fields: [ruleId], references: [id])
-  ruleId     String
-  // 場代
-  seatCost   Int          @default(0)
-  results    GameResult[]
-  tipResults TipResult[]
-  // 人数: 3 -> 三麻, 4 -> 四麻
-  headCount  Int          @default(4) // @db.TinyInt(1)
-  createdAt  DateTime     @default(now())
-  updatedAt  DateTime     @updatedAt
-}
-
-model TipResult {
-  id       String @id @default(cuid())
-  // チップ枚数
-  quantity Int    @default(20) // @db.TinyInt(4)
-  member   Member @relation(fields: [memberId], references: [id])
-  memberId String
-  game     Game   @relation(fields: [gameId], references: [id])
-  gameId   String
-
-  @@unique([memberId, gameId])
-}
-
-model Parlor {
-  id        String   @id @default(cuid())
-  name      String   @db.VarChar(128)
-  games     Game[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model Rule {
-  id             String   @id @default(cuid())
-  // レート
-  rate           Int      @default(50)
-  // ウマ
-  uma            Int      @default(0) // @db.TinyInt(3)
-  // 初期持ち点
-  defaultPoint   Int      @default(25000)
-  // 基準点
-  referencePoint Int      @default(30000)
-  // チップ点数
-  tip            Int      @default(0)
-  // enum - 0: 東風 1: 半荘
-  round          Int      @default(1) // @db.TinyInt(1)
-  games          Game[]
-  // 飛び賞
-  killBonus      Boolean  @default(true) // @db.TinyInt(1)
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-
-  @@unique([rate, uma, defaultPoint, referencePoint, round, killBonus])
-}
-
 model VerificationToken {
   identifier String
   token      String   @unique
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model Player {
+  id          String       @id @default(cuid())
+  name        String
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  gamePlayers GamePlayer[]
+}
+
+model Parlor {
+  id        String        @id @default(cuid())
+  name      String
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  sessions  GameSession[]
+}
+
+model GameSession {
+  id        String   @id @default(cuid())
+  date      DateTime
+  parlorId  String
+  parlor    Parlor   @relation(fields: [parlorId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  rule      Rule     @relation(fields: [ruleId], references: [id])
+  games     Game[]
+  ruleId    String
+}
+
+model Game {
+  id        String       @id @default(cuid())
+  sequence  Int
+  sessionId String
+  session   GameSession  @relation(fields: [sessionId], references: [id])
+  players   GamePlayer[]
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  @@unique([sessionId, sequence])
+}
+
+model GamePlayer {
+  id        String   @id @default(cuid())
+  gameId    String
+  playerId  String
+  score     Int      @default(25000)
+  rank      Int // @db.TinyInt(1) 1,2,3,4
+  killer    Boolean // 飛ばした人
+  killed    Boolean // 飛ばされたかどうか
+  game      Game     @relation(fields: [gameId], references: [id])
+  player    Player   @relation(fields: [playerId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Rule {
+  id          String        @id @default(cuid())
+  uma         String        @default("10-30") // 5-10, 10-20, 10-30, 20-30
+  oka         Int           @default(20000) // ((score * playerCount) + oka) / playerCount = initial score
+  killScore   Int           @default(10000)
+  playerCount Int           @default(4)
+  chip        Int           @default(2000)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  GameSession GameSession[]
 }

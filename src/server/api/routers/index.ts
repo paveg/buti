@@ -1,5 +1,5 @@
-export { memberRouter } from "./member";
+export { playerRouter } from "./player";
 export { parlorRouter } from "./parlor";
-export { ruleRouter } from "./rule";
-export { gameRouter } from "./game";
-export { gameResultRouter } from "./gameResult";
+export { gameSessionRouter } from './gameSession'
+export { gameRouter } from './game'
+export { gamePlayerRouter } from './gamePlayer'

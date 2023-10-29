@@ -24,18 +24,11 @@ export const Navigation: FC = ({ ...props }) => {
               <Link href="/">戦績</Link>
             </Button>
             <Button
-              className={router.asPath === "/members" ? "font-bold" : ""}
+              className={router.asPath === "/players" ? "font-bold" : ""}
               variant="link"
               asChild
             >
-              <Link href="/members">メンバー</Link>
-            </Button>
-            <Button
-              className={router.asPath === "/rules" ? "font-bold" : ""}
-              variant="link"
-              asChild
-            >
-              <Link href="/rules">ルール</Link>
+              <Link href="/players">雀士</Link>
             </Button>
             <Button
               className={router.asPath === "/parlors" ? "font-bold" : ""}

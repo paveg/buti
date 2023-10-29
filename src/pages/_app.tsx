@@ -3,10 +3,12 @@ import { SessionProvider } from "next-auth/react";
 import { type AppProps } from "next/app";
 import Head from "next/head";
 import "~/styles/globals.css";
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
 import { api } from "~/utils/api";
+import { MultiProvider } from '~/components/providers/multiProvider';
 
-function MyApp({ Component, pageProps }: AppProps<{session: Session}>) {
+function MyApp({ Component, pageProps }: AppProps<{ session: Session }>) {
   return (
     <>
       <Head>
@@ -21,7 +23,10 @@ function MyApp({ Component, pageProps }: AppProps<{session: Session}>) {
         />
       </Head>
       <SessionProvider session={pageProps.session}>
-        <Component {...pageProps} />
+        <MultiProvider>
+          <Component {...pageProps} />
+        </MultiProvider>
+        <ReactQueryDevtools initialIsOpen={false} />
       </SessionProvider>
     </>
   );

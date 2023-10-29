@@ -121,14 +121,11 @@ export const SessionTable = ({ session }: { session: SessionWithDetails }) => {
                 const score = calculateScore({ defaultScore: ds, rule: rule, player: player, killedCount: killedCount })
                 return (
                   <TableCell key={player.player.name} className="text-center">
-                    <Badge variant="outline" className="mr-1">
-                      {player.rank}
-                    </Badge>
                     <HoverCard>
                       <HoverCardTrigger>
-                        <Badge variant="secondary" className="ml-1">{RoundDown(score, 1000) / 1000}</Badge>
+                        <p>{RoundDown(score, 1000) / 1000}<span className="hidden sm:inline-block">({player.rank})</span></p>
                       </HoverCardTrigger>
-                      <HoverCardContent sideOffset={6}>
+                      <HoverCardContent side="top">
                         <Badge variant="secondary" className="ml-1 my-1 sm:my-0">得点: {player.score}</Badge>
                         {player.killer && (
                           <Badge className="ml-1">トビ賞</Badge>
